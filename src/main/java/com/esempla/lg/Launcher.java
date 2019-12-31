@@ -1,13 +1,16 @@
 package com.esempla.lg;
 
 import com.esempla.lg.controller.FrontPanelController;
+import com.esempla.lg.service.KeyGenerator;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javax0.license3j.crypto.LicenseKeyPair;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -18,15 +21,18 @@ public class Launcher extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
 
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        LicenseKeyPair myKeys = KeyGenerator.getLicenseKeyPair("RSA",1024);
+        log.info(myKeys.toString());
+        log.info("vasea");
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("License generator");
         log.info("bravo");
         initRootLayout();
         loadFrontPanel();
-
 
     }
 
