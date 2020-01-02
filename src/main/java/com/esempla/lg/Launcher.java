@@ -1,37 +1,84 @@
 package com.esempla.lg;
 
 import com.esempla.lg.controller.FrontPanelController;
+import com.esempla.lg.model.Key;
+import com.esempla.lg.service.FilesManager;
 import com.esempla.lg.service.KeyGenerator;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javax0.license3j.crypto.LicenseKeyPair;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.IOException;
 
 
 @Slf4j
 public class Launcher extends Application {
+
+
+    private String appHomeDir = ".licenseGenerator";
+    private String homeURL =  System.getProperty("user.home").toString()+ File.separator+appHomeDir;
+    private String keysHomeDirectory = ".keys";
+    private String logsHomeDirectory = ".logs";
     private Stage primaryStage;
     private BorderPane rootLayout;
+    private ObservableList<Key> keys = FXCollections.observableArrayList();
+
+
+    public Launcher(){
+        if (homeExists()) {
+            log.info("check if the keys home folder exists. If not, it is created");
+            createKeysHomeFolder();
+            log.info("Load keys from "+homeURL);
+
+            loadKeys();
+        }else{
+            log.info("Created the home directory: Path: "+homeURL);
+            createHomeDirectory();
+        }
+    }
+
+    private void createKeysHomeFolder() {
+        if (!FilesManager.isInDirectory(keysHomeDirectory,homeURL)){
+            FilesManager.createDirectory(keysHomeDirectory,homeURL);
+        }
+    }
+
+    private void createHomeDirectory() {
+        FilesManager.createDirectory(appHomeDir,System.getProperty("user.home").toString());
+        FilesManager.createDirectory(keysHomeDirectory,homeURL);
+        FilesManager.createDirectory(logsHomeDirectory,homeURL);
+    }
+
+    private boolean homeExists() {
+        return FilesManager.isInDirectory(appHomeDir,System.getProperty("user.home").toString());
+
+    }
+
+    private void loadKeys() {
+        LicenseKeyPair myKey =KeyGenerator.getLicenseKeyPair("RSA",1024);
+        Key mkey = new Key("prima",myKey);
+        keys.add(mkey);
+    }
 
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        LicenseKeyPair myKeys = KeyGenerator.getLicenseKeyPair("RSA",1024);
-        log.info(myKeys.toString());
-        log.info("vasea");
+
+        log.info("Create the primarty stage");
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("License generator");
-        log.info("bravo");
+        log.info("init the root layout");
         initRootLayout();
+        log.info("init the front Panel");
         loadFrontPanel();
 
     }
@@ -69,6 +116,11 @@ public class Launcher extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public ObservableList<Key> getKeys() {
+        return keys;
     }
 
 
