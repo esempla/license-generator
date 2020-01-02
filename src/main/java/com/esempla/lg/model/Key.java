@@ -12,10 +12,10 @@ public class Key {
 
 
     //constr
-    Key(){
+   public  Key(){
       this(null,null);
     }
-    Key(String name, LicenseKeyPair keyPair){
+    public Key(String name, LicenseKeyPair keyPair){
         this.name = new SimpleStringProperty(name);
         this.keyPair = new SimpleObjectProperty<LicenseKeyPair>(keyPair);
     }
@@ -46,6 +46,10 @@ public class Key {
     }
     public ObjectProperty<LicenseKeyPair> keyPairProperty(){
         return keyPair;
+    }
+    @Override
+    public String toString(){
+       return this.getName().toString();
     }
 
 }
