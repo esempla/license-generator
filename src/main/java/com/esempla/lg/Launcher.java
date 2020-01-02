@@ -3,7 +3,7 @@ package com.esempla.lg;
 import com.esempla.lg.controller.FrontPanelController;
 import com.esempla.lg.model.Key;
 import com.esempla.lg.service.FilesManager;
-import com.esempla.lg.service.KeyGenerator;
+import com.esempla.lg.service.KeyManager;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -63,9 +63,13 @@ public class Launcher extends Application {
     }
 
     private void loadKeys() {
-        LicenseKeyPair myKey =KeyGenerator.getLicenseKeyPair("RSA",1024);
-        Key mkey = new Key("prima",myKey);
-        keys.add(mkey);
+//        LicenseKeyPair myKey = KeyManager.getLicenseKeyPair("RSA",1024);
+//        Key mkey = new Key("prima",myKey);
+//        keys.add(mkey);
+//        KeyManager.writeKeyToFile(mkey,homeURL+File.separator+keysHomeDirectory);
+//        log.info("AddedKeysToFile");
+        Key key = KeyManager.loadKeyFromFolder("prima",homeURL+File.separator+keysHomeDirectory);
+        log.info("hhah");
     }
 
 
