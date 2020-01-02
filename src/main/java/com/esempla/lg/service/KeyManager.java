@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -26,7 +27,11 @@ public class KeyManager {
         }
         return mykeys;
     }
-    public static List<Key> getKeysFromRootAppFolder(){
+    public static List<Key> getKeysFromRootAppFolder(String path){
+        List<Key> keys = new ArrayList<>();
+        for (File file:FilesManager.listDirectories(path)){
+            keys.add(KeyManager.loadKeyFromFolder(file.getName(),path));
+        }
 
         return null;
     }
