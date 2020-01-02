@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 
 @Slf4j
@@ -68,7 +69,7 @@ public class Launcher extends Application {
 //        keys.add(mkey);
 //        KeyManager.writeKeyToFile(mkey,homeURL+File.separator+keysHomeDirectory);
 //        log.info("AddedKeysToFile");
-        Key key = KeyManager.loadKeyFromFolder("prima",homeURL+File.separator+keysHomeDirectory);
+//       keys.addAll(Objects.requireNonNull(KeyManager.getKeysFromRootAppFolder(homeURL + File.separator + keysHomeDirectory)));
         log.info("hhah");
     }
 
