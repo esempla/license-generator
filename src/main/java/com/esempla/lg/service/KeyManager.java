@@ -5,10 +5,6 @@ import javax0.license3j.crypto.LicenseKeyPair;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -17,24 +13,26 @@ import java.util.List;
 @Slf4j
 public class KeyManager {
 
-    public static LicenseKeyPair getLicenseKeyPair(String alg, Integer size){
-      log.info("getHere");
+    public static LicenseKeyPair getLicenseKeyPair(String alg, Integer size) {
+        log.info("getHere");
         LicenseKeyPair mykeys = null;
         try {
-             mykeys = LicenseKeyPair.Create.from(alg,size);
+            mykeys = LicenseKeyPair.Create.from(alg, size);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return mykeys;
     }
-    public static List<Key> getKeysFromRootAppFolder(String path){
+
+    public static List<Key> getKeysFromRootAppFolder(String path) {
         List<Key> keys = new ArrayList<>();
-        for (File file:FilesManager.listDirectories(path)){
-            keys.add(KeyManager.loadKeyFromFolder(file.getName(),path));
+        for (File file : FilesManager.listDirectories(path)) {
+            keys.add(KeyManager.loadKeyFromFolder(file.getName(), path));
         }
 
         return null;
     }
+
     public static Key loadKeyFromFolder(String directoryName, String path) {
         Key key = new Key();
         byte[] privateBytes = new byte[0];
@@ -42,27 +40,28 @@ public class KeyManager {
         key.setName(directoryName);
 
         for (File file : FilesManager.listFiles(path + File.separator + directoryName)) {
-            if (file.getName().contains("pub")){
+            if (file.getName().contains("pub")) {
                 publicBytes = FilesManager.readContentIntoByteArray(file);
-            }else{
+            } else {
                 privateBytes = FilesManager.readContentIntoByteArray(file);
             }
         }
         try {
-            key.setKeyPair(LicenseKeyPair.Create.from(privateBytes,publicBytes));
+            key.setKeyPair(LicenseKeyPair.Create.from(privateBytes, publicBytes));
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
-        return  key;
+        return key;
     }
-    public static boolean writeKeyToFile(Key key, String path){
-        FilesManager.createDirectory(key.getName(),path);
-        FilesManager.createFile("key",path+File.separator+key.getName());
-        FilesManager.createFile("key.pub",path+File.separator+key.getName());
-        File file = new File(path+File.separator+key.getName()+File.separator+"key");
-        FilesManager.writeByteArrayToFile(key.getKeyPair().getPrivate(),file);
-        File file2 = new File(path+File.separator+key.getName()+File.separator+"key.pub");
-        FilesManager.writeByteArrayToFile(key.getKeyPair().getPublic(),file2);
+
+    public static boolean writeKeyToFile(Key key, String path) {
+        FilesManager.createDirectory(key.getName(), path);
+        FilesManager.createFile("key", path + File.separator + key.getName());
+        FilesManager.createFile("key.pub", path + File.separator + key.getName());
+        File file = new File(path + File.separator + key.getName() + File.separator + "key");
+        FilesManager.writeByteArrayToFile(key.getKeyPair().getPrivate(), file);
+        File file2 = new File(path + File.separator + key.getName() + File.separator + "key.pub");
+        FilesManager.writeByteArrayToFile(key.getKeyPair().getPublic(), file2);
         return true;
     }
 

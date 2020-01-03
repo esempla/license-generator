@@ -1,65 +1,61 @@
 package com.esempla.lg;
 
-import com.esempla.lg.controller.FrontPanelController;
+import com.esempla.lg.controller.RootLayoutController;
 import com.esempla.lg.model.Key;
 import com.esempla.lg.service.FilesManager;
-import com.esempla.lg.service.KeyManager;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javax0.license3j.crypto.LicenseKeyPair;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
-
 
 @Slf4j
 public class Launcher extends Application {
 
-
     private String appHomeDir = ".licenseGenerator";
-    private String homeURL =  System.getProperty("user.home").toString()+ File.separator+appHomeDir;
+    private String homeURL = System.getProperty("user.home") + File.separator + appHomeDir;
     private String keysHomeDirectory = ".keys";
     private String logsHomeDirectory = ".logs";
     private Stage primaryStage;
-    private BorderPane rootLayout;
+
     private ObservableList<Key> keys = FXCollections.observableArrayList();
 
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-    public Launcher(){
+    @Override
+    public void init() throws Exception {
+        super.init();
         if (homeExists()) {
             log.info("check if the keys home folder exists. If not, it is created");
             createKeysHomeFolder();
-            log.info("Load keys from "+homeURL);
+            log.info("Load keys from " + homeURL);
 
             loadKeys();
-        }else{
-            log.info("Created the home directory: Path: "+homeURL);
+        } else {
+            log.info("Created the home directory: Path: " + homeURL);
             createHomeDirectory();
         }
     }
 
     private void createKeysHomeFolder() {
-        if (!FilesManager.isInDirectory(keysHomeDirectory,homeURL)){
-            FilesManager.createDirectory(keysHomeDirectory,homeURL);
+        if (!FilesManager.isInDirectory(keysHomeDirectory, homeURL)) {
+            FilesManager.createDirectory(keysHomeDirectory, homeURL);
         }
     }
 
     private void createHomeDirectory() {
-        FilesManager.createDirectory(appHomeDir,System.getProperty("user.home").toString());
-        FilesManager.createDirectory(keysHomeDirectory,homeURL);
-        FilesManager.createDirectory(logsHomeDirectory,homeURL);
+        FilesManager.createDirectory(appHomeDir, System.getProperty("user.home").toString());
+        FilesManager.createDirectory(keysHomeDirectory, homeURL);
+        FilesManager.createDirectory(logsHomeDirectory, homeURL);
     }
 
     private boolean homeExists() {
-        return FilesManager.isInDirectory(appHomeDir,System.getProperty("user.home").toString());
+        return FilesManager.isInDirectory(appHomeDir, System.getProperty("user.home").toString());
 
     }
 
@@ -73,63 +69,17 @@ public class Launcher extends Application {
         log.info("hhah");
     }
 
-
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-
         log.info("Create the primarty stage");
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("License generator");
         log.info("init the root layout");
-        initRootLayout();
-        log.info("init the front Panel");
-        loadFrontPanel();
 
+        new RootLayoutController().initRootLayout(primaryStage);
     }
-
-
-
-    private void initRootLayout() {
-        try{
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Launcher.class.getResource("/fxmls/rootLayout.fxml"));
-            rootLayout = (BorderPane) loader.load();
-
-            Scene scene = new Scene(rootLayout);
-            primaryStage.setScene(scene);
-            primaryStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadFrontPanel() {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Launcher.class.getResource("/fxmls/frontPanel.fxml"));
-            AnchorPane frontPanel = (AnchorPane) loader.load();
-
-            rootLayout.setCenter(frontPanel);
-
-            FrontPanelController controller = loader.getController();
-            controller.setMainApp(this);
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public ObservableList<Key> getKeys() {
         return keys;
-    }
-
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

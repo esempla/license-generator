@@ -5,7 +5,7 @@ public enum EncryptAlghoritms {
 
     private String label;
 
-    EncryptAlghoritms(String label){
+    EncryptAlghoritms(String label) {
         this.label = label;
     }
 

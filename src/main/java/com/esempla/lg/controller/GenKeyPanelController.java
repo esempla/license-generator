@@ -5,13 +5,10 @@ import javafx.fxml.FXML;
 
 public class GenKeyPanelController {
 
-
-
-
     private Launcher launcher;
 
     @FXML
-    private void initialize(){
+    private void initialize() {
 
     }
 

@@ -12,10 +12,11 @@ public class Key {
 
 
     //constr
-   public  Key(){
-      this(null,null);
+    public Key() {
+        this(null, null);
     }
-    public Key(String name, LicenseKeyPair keyPair){
+
+    public Key(String name, LicenseKeyPair keyPair) {
         this.name = new SimpleStringProperty(name);
         this.keyPair = new SimpleObjectProperty<LicenseKeyPair>(keyPair);
     }
@@ -27,29 +28,31 @@ public class Key {
         return keyPair.get();
     }
 
+    public void setKeyPair(LicenseKeyPair keyPair) {
+        this.keyPair.set(keyPair);
+    }
+
     public String getName() {
         return name.get();
     }
 
     //setter
-    public void setName(String name){
+    public void setName(String name) {
         this.name.set(name);
     }
 
-    public void setKeyPair(LicenseKeyPair keyPair){
-        this.keyPair.set(keyPair);
-    }
-
     //property
-    public StringProperty nameProperty(){
+    public StringProperty nameProperty() {
         return name;
     }
-    public ObjectProperty<LicenseKeyPair> keyPairProperty(){
+
+    public ObjectProperty<LicenseKeyPair> keyPairProperty() {
         return keyPair;
     }
+
     @Override
-    public String toString(){
-       return this.getName().toString();
+    public String toString() {
+        return this.getName().toString();
     }
 
 }

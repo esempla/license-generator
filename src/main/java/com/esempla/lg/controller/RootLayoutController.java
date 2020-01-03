@@ -1,18 +1,30 @@
 package com.esempla.lg.controller;
 
-import com.esempla.lg.Launcher;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class RootLayoutController {
 
-    private Launcher launcher;
+    private BorderPane borderPane;
 
     @FXML
-    private void initialize(){
-
+    private void initialize() {
     }
 
-    public void setMainApp(Launcher launcher) {
-        this.launcher = launcher;
+    public void initRootLayout(Stage primaryStage) {
+        try {
+            borderPane = new FXMLLoader(getClass().getResource("/fxmls/rootLayout.fxml")).load();
+            Scene scene = new Scene(borderPane);
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
