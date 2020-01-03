@@ -1,23 +1,19 @@
 package com.esempla.lg;
 
-import com.esempla.lg.controller.RootLayoutController;
+import com.esempla.lg.controller.MainController;
+import com.esempla.lg.util.FXMLLoaderProvider;
 import com.esempla.lg.util.FileSystemUtil;
+import com.esempla.lg.util.ViewsFactory;
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+
 @Slf4j
 public class Launcher extends Application {
-
-
-    public static Stage getPrimaryStage() {
-        return primaryStage;
-    }
-
-    private static Stage primaryStage;
-    private FileSystemUtil fileSystemUtil = new FileSystemUtil();
-    private RootLayoutController rootLayoutController = new RootLayoutController();
-
 
     public static void main(String[] args) {
         launch(args);
@@ -26,18 +22,23 @@ public class Launcher extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-        fileSystemUtil.init();
+        new FileSystemUtil().init();
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws IOException {
         log.info("Create the primarty stage");
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("License generator");
-        log.info("init the root layout");
+        primaryStage.setTitle("License generator");
 
-        rootLayoutController.setPrimaryStage(this.primaryStage);
-        rootLayoutController.initRootLayout();
+        FXMLLoaderProvider provider = new FXMLLoaderProvider();
+        BorderPane borderPane = (BorderPane) ViewsFactory.MAIN.getNode(provider);
+
+        MainController controller = provider.getLoader().getController();
+        controller.setStage(primaryStage);
+
+        Scene scene = new Scene(borderPane);
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+        primaryStage.show();
     }
-
 }

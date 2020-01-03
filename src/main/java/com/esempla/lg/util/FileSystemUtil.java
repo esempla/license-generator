@@ -49,7 +49,6 @@ public class FileSystemUtil {
 
     private boolean homeExists() {
         return filesManager.isInDirectory(appHomeDir, System.getProperty("user.home").toString());
-
     }
 
     public List<Key> loadKeys() {
@@ -57,6 +56,4 @@ public class FileSystemUtil {
         keys = Objects.requireNonNull(keyManager.getKeysFromRootAppFolder(keysDirectoryPath));
         return keys;
     }
-
-
 }

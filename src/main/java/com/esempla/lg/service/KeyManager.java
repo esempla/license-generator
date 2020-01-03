@@ -31,7 +31,6 @@ public class KeyManager {
         for (File file : filesManager.listDirectories(path)) {
             keys.add(loadKeyFromFolder(file.getName(), path));
         }
-
         return keys;
     }
 
