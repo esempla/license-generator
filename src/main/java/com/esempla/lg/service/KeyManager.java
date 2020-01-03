@@ -32,7 +32,7 @@ public class KeyManager {
             keys.add(loadKeyFromFolder(file.getName(), path));
         }
 
-        return null;
+        return keys;
     }
 
     public  Key loadKeyFromFolder(String directoryName, String path) {

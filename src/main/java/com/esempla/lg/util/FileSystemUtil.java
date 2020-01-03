@@ -1,9 +1,14 @@
 package com.esempla.lg.util;
 
+import com.esempla.lg.model.Key;
 import com.esempla.lg.service.FilesManager;
+import com.esempla.lg.service.KeyManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class FileSystemUtil {
@@ -13,6 +18,7 @@ public class FileSystemUtil {
     public static String keysHomeDirectory = ".keys";
     public static String logsHomeDirectory = ".logs";
     private FilesManager filesManager = new FilesManager();
+    private KeyManager keyManager = new KeyManager();
 
 
     public void init() {
@@ -45,14 +51,10 @@ public class FileSystemUtil {
 
     }
 
-    private void loadKeys() {
-//        LicenseKeyPair myKey = KeyManager.getLicenseKeyPair("RSA",1024);
-//        Key mkey = new Key("prima",myKey);
-//        keys.add(mkey);
-//        KeyManager.writeKeyToFile(mkey,homeURL+File.separator+keysHomeDirectory);
-//        log.info("AddedKeysToFile");
-//       keys.addAll(Objects.requireNonNull(KeyManager.getKeysFromRootAppFolder(homeURL + File.separator + keysHomeDirectory)));
-        log.info("hhah");
+    public List<Key> loadKeys() {
+        List<Key> keys = new ArrayList<>();
+        keys = Objects.requireNonNull(keyManager.getKeysFromRootAppFolder(homeURL + File.separator + keysHomeDirectory));
+        return keys;
     }
 
 

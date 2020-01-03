@@ -18,8 +18,9 @@ public class Launcher extends Application {
 
 
     private Stage primaryStage;
+    private FileSystemUtil fileSystemUtil = new FileSystemUtil();
 
-    private ObservableList<Key> keys = FXCollections.observableArrayList();
+
 
     public static void main(String[] args) {
         launch(args);
@@ -28,7 +29,8 @@ public class Launcher extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-        new FileSystemUtil().init();
+        fileSystemUtil.init();
+
     }
 
 
@@ -43,7 +45,5 @@ public class Launcher extends Application {
         new RootLayoutController().initRootLayout(primaryStage);
     }
 
-    public ObservableList<Key> getKeys() {
-        return keys;
-    }
+
 }
