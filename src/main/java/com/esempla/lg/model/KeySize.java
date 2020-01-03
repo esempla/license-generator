@@ -14,7 +14,7 @@ public enum KeySize {
         return size.toString();
     }
 
-    public Integer getSize() {
+    public Integer value() {
         return size;
     }
 

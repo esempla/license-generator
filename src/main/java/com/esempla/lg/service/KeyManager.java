@@ -15,7 +15,7 @@ public class KeyManager {
 
     private FilesManager filesManager = new FilesManager();
 
-    public  LicenseKeyPair getLicenseKeyPair(String alg, Integer size) {
+    public LicenseKeyPair getLicenseKeyPair(String alg, Integer size) {
         log.info("getHere");
         LicenseKeyPair mykeys = null;
         try {
@@ -26,7 +26,7 @@ public class KeyManager {
         return mykeys;
     }
 
-    public  List<Key> getKeysFromRootAppFolder(String path) {
+    public List<Key> getKeysFromRootAppFolder(String path) {
         List<Key> keys = new ArrayList<>();
         for (File file : filesManager.listDirectories(path)) {
             keys.add(loadKeyFromFolder(file.getName(), path));
@@ -35,7 +35,7 @@ public class KeyManager {
         return keys;
     }
 
-    public  Key loadKeyFromFolder(String directoryName, String path) {
+    public Key loadKeyFromFolder(String directoryName, String path) {
         Key key = new Key();
         byte[] privateBytes = new byte[0];
         byte[] publicBytes = new byte[0];
@@ -56,7 +56,7 @@ public class KeyManager {
         return key;
     }
 
-    public  boolean writeKeyToFile(Key key, String path) {
+    public boolean writeKeyToFile(Key key, String path) {
         filesManager.createDirectory(key.getName(), path);
         filesManager.createFile("key", path + File.separator + key.getName());
         filesManager.createFile("key.pub", path + File.separator + key.getName());
