@@ -15,8 +15,9 @@ public class FileSystemUtil {
 
     public static String appHomeDir = ".licenseGenerator";
     public static String homeURL = System.getProperty("user.home") + File.separator + appHomeDir;
-    public static String keysHomeDirectory = ".keys";
+    public static String keysDirectory = ".keys";
     public static String logsHomeDirectory = ".logs";
+    public static String keysDirectoryPath = homeURL + File.separator + keysDirectory;
     private FilesManager filesManager = new FilesManager();
     private KeyManager keyManager = new KeyManager();
 
@@ -34,26 +35,26 @@ public class FileSystemUtil {
         }
     }
 
-    private  void createKeysHomeFolder() {
-        if (!filesManager.isInDirectory(keysHomeDirectory, homeURL)) {
-            filesManager.createDirectory(keysHomeDirectory, homeURL);
+    private void createKeysHomeFolder() {
+        if (!filesManager.isInDirectory(keysDirectory, homeURL)) {
+            filesManager.createDirectory(keysDirectory, homeURL);
         }
     }
 
-    private  void createHomeDirectory() {
+    private void createHomeDirectory() {
         filesManager.createDirectory(appHomeDir, System.getProperty("user.home").toString());
-        filesManager.createDirectory(keysHomeDirectory, homeURL);
+        filesManager.createDirectory(keysDirectory, homeURL);
         filesManager.createDirectory(logsHomeDirectory, homeURL);
     }
 
-    private  boolean homeExists() {
+    private boolean homeExists() {
         return filesManager.isInDirectory(appHomeDir, System.getProperty("user.home").toString());
 
     }
 
     public List<Key> loadKeys() {
         List<Key> keys = new ArrayList<>();
-        keys = Objects.requireNonNull(keyManager.getKeysFromRootAppFolder(homeURL + File.separator + keysHomeDirectory));
+        keys = Objects.requireNonNull(keyManager.getKeysFromRootAppFolder(keysDirectoryPath));
         return keys;
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
 public class FilesManager {
 
     //returns all the files from a directory
-    public  List<File> listFiles(String directoryName) {
+    public List<File> listFiles(String directoryName) {
         log.info("gets all the files from " + directoryName);
 
         File directory = new File(directoryName);
@@ -29,7 +29,7 @@ public class FilesManager {
     }
 
     //returns all the directories from a directory
-    public  List<File> listDirectories(String directoryName) {
+    public List<File> listDirectories(String directoryName) {
         log.info("get all directories from " + directoryName);
 
         File directory = new File(directoryName);
@@ -46,7 +46,7 @@ public class FilesManager {
         return directories;
     }
 
-    public  boolean isInDirectory(String fileName, String directoryName) {
+    public boolean isInDirectory(String fileName, String directoryName) {
         File directory = new File(directoryName);
         File[] fList = directory.listFiles();
         if (fList != null)
@@ -78,7 +78,7 @@ public class FilesManager {
         return result;
     }
 
-    public  byte[] readContentIntoByteArray(File file) {
+    public byte[] readContentIntoByteArray(File file) {
         FileInputStream fileInputStream = null;
         byte[] bFile = new byte[(int) file.length()];
         try {
@@ -95,7 +95,7 @@ public class FilesManager {
         return bFile;
     }
 
-    public  boolean writeByteArrayToFile(byte[] bytes, File file) {
+    public boolean writeByteArrayToFile(byte[] bytes, File file) {
         FileOutputStream output = null;
         boolean success = false;
         try {
@@ -110,7 +110,7 @@ public class FilesManager {
     }
 
 
-    public  boolean createFile(String name, String path) {
+    public boolean createFile(String name, String path) {
         boolean success = false;
         try {
             File file = new File(path + File.separator + name);

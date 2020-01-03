@@ -13,4 +13,8 @@ public enum EncryptAlghoritms {
     public String toString() {
         return label;
     }
+
+    public String value() {
+        return label;
+    }
 }
