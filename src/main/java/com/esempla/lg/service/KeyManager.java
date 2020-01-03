@@ -13,7 +13,9 @@ import java.util.List;
 @Slf4j
 public class KeyManager {
 
-    public static LicenseKeyPair getLicenseKeyPair(String alg, Integer size) {
+    private FilesManager filesManager = new FilesManager();
+
+    public  LicenseKeyPair getLicenseKeyPair(String alg, Integer size) {
         log.info("getHere");
         LicenseKeyPair mykeys = null;
         try {
@@ -24,26 +26,26 @@ public class KeyManager {
         return mykeys;
     }
 
-    public static List<Key> getKeysFromRootAppFolder(String path) {
+    public  List<Key> getKeysFromRootAppFolder(String path) {
         List<Key> keys = new ArrayList<>();
-        for (File file : FilesManager.listDirectories(path)) {
-            keys.add(KeyManager.loadKeyFromFolder(file.getName(), path));
+        for (File file : filesManager.listDirectories(path)) {
+            keys.add(loadKeyFromFolder(file.getName(), path));
         }
 
         return null;
     }
 
-    public static Key loadKeyFromFolder(String directoryName, String path) {
+    public  Key loadKeyFromFolder(String directoryName, String path) {
         Key key = new Key();
         byte[] privateBytes = new byte[0];
         byte[] publicBytes = new byte[0];
         key.setName(directoryName);
 
-        for (File file : FilesManager.listFiles(path + File.separator + directoryName)) {
+        for (File file : filesManager.listFiles(path + File.separator + directoryName)) {
             if (file.getName().contains("pub")) {
-                publicBytes = FilesManager.readContentIntoByteArray(file);
+                publicBytes = filesManager.readContentIntoByteArray(file);
             } else {
-                privateBytes = FilesManager.readContentIntoByteArray(file);
+                privateBytes = filesManager.readContentIntoByteArray(file);
             }
         }
         try {
@@ -54,14 +56,14 @@ public class KeyManager {
         return key;
     }
 
-    public static boolean writeKeyToFile(Key key, String path) {
-        FilesManager.createDirectory(key.getName(), path);
-        FilesManager.createFile("key", path + File.separator + key.getName());
-        FilesManager.createFile("key.pub", path + File.separator + key.getName());
+    public  boolean writeKeyToFile(Key key, String path) {
+        filesManager.createDirectory(key.getName(), path);
+        filesManager.createFile("key", path + File.separator + key.getName());
+        filesManager.createFile("key.pub", path + File.separator + key.getName());
         File file = new File(path + File.separator + key.getName() + File.separator + "key");
-        FilesManager.writeByteArrayToFile(key.getKeyPair().getPrivate(), file);
+        filesManager.writeByteArrayToFile(key.getKeyPair().getPrivate(), file);
         File file2 = new File(path + File.separator + key.getName() + File.separator + "key.pub");
-        FilesManager.writeByteArrayToFile(key.getKeyPair().getPublic(), file2);
+        filesManager.writeByteArrayToFile(key.getKeyPair().getPublic(), file2);
         return true;
     }
 
