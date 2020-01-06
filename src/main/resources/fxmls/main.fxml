@@ -38,7 +38,7 @@
             <children>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="290.0" prefWidth="689.0" AnchorPane.bottomAnchor="203.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <TextArea layoutX="231.0" layoutY="15.0" prefHeight="297.0" prefWidth="446.0" AnchorPane.leftAnchor="231.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="15.0" />
+                        <TextArea fx:id="licenseTextArea" layoutX="231.0" layoutY="15.0" prefHeight="297.0" prefWidth="446.0" AnchorPane.leftAnchor="231.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="15.0" />
                         <ListView fx:id="keysListView" layoutX="32.0" layoutY="16.0" prefHeight="298.0" prefWidth="183.0" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="16.0" />
                     </children>
                 </AnchorPane>
@@ -53,7 +53,7 @@
     <right>
         <AnchorPane prefHeight="471.0" prefWidth="109.0" BorderPane.alignment="CENTER">
             <children>
-                <Button layoutX="10.0" layoutY="16.0" mnemonicParsing="false" prefWidth="80.0" text="Upload" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="16.0" />
+                <Button layoutX="10.0" layoutY="16.0" mnemonicParsing="false" onAction="#handleUploadButton" prefWidth="80.0" text="Upload" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="16.0" />
                 <Button layoutX="10.0" layoutY="58.0" mnemonicParsing="false" prefWidth="80.0" text="Edit" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="58.0" />
                 <ChoiceBox layoutX="10.0" layoutY="106.0" prefHeight="26.0" prefWidth="80.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="106.0" />
                 <Button layoutX="10.0" layoutY="153.0" mnemonicParsing="false" prefWidth="80.0" text="Sign" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="153.0" />

@@ -2,10 +2,7 @@ package com.esempla.lg.service;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,5 +124,26 @@ public class FilesManager {
             e.printStackTrace();
         }
         return success;
+    }
+
+
+    //reads data from a file
+    public String readFromFile(File file){
+        log.info("reading data from file: "+file.getName());
+        StringBuilder data = new StringBuilder();
+        try (FileInputStream fis = new FileInputStream(file)) {
+
+            log.info("Total file size to read (in bytes) : "+ fis.available());
+
+            int content;
+            while ((content = fis.read()) != -1) {
+                // convert to char and display it
+                data.append((char) content);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  data.toString();
     }
 }
