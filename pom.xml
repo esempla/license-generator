@@ -75,6 +75,13 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <configuration>
+                    <stripDebug>true</stripDebug>
+                    <compress>2</compress>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <noManPages>true</noManPages>
+                    <launcher>launcher</launcher>
+                    <jlinkImageName>licensegen</jlinkImageName>
+                    <jlinkZipName>licensegenzip</jlinkZipName>
                     <mainClass>com.esempla.lg.Launcher</mainClass>
                 </configuration>
             </plugin>
@@ -83,13 +90,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <release>${java.version}</release>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.gluonhq</groupId>
-                <artifactId>client-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.esempla.lg.Launcher</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -104,11 +104,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>com.gluonhq</groupId>
-                    <artifactId>client-maven-plugin</artifactId>
-                    <version>0.0.12</version>
                 </plugin>
             </plugins>
         </pluginManagement>
