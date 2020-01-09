@@ -1,7 +1,9 @@
 package com.esempla.lg.controller;
 
 import com.esempla.lg.Launcher;
+import com.esempla.lg.model.Digest;
 import com.esempla.lg.model.Key;
+import com.esempla.lg.model.KeySize;
 import com.esempla.lg.service.FilesManager;
 import com.esempla.lg.service.KeyManager;
 import com.esempla.lg.service.LicenseService;
@@ -14,10 +16,12 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
@@ -29,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.PrivateKey;
 
 @Slf4j
 public class MainController extends AbstractController{
@@ -46,7 +51,19 @@ public class MainController extends AbstractController{
     private TextArea licenseTextArea;
 
     @FXML
+    private TextArea licenseEncTextArea;
+
+    @FXML
+    private ChoiceBox<Digest> digestChoiceBox;
+
+    @FXML
     private Button signButton;
+
+    @FXML
+    private Button verifyButton;
+
+    @FXML
+    private Button saveButton;
 
     public MainController() {
         super(new FXMLLoaderProvider());
@@ -70,6 +87,7 @@ public class MainController extends AbstractController{
                 signButton.setDisable(!licenseService.isLicense(t1));
                 }
         });
+        digestChoiceBox.setItems(FXCollections.observableArrayList(Digest.values()));
     }
 
     @FXML
@@ -105,6 +123,26 @@ public class MainController extends AbstractController{
         else{
             log.warn("The file: "+file.getName()+" is empty");
         }
+    }
+
+    @FXML
+    void handleSaveButton(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleSignButton(ActionEvent event) {
+        PrivateKey privateKey = keysListView.getSelectionModel().getSelectedItem().getKeyPair().getPair().getPrivate();
+        String digest = digestChoiceBox.getSelectionModel().getSelectedItem().value();
+        License license = License.Create.from(licenseTextArea.getText());
+        licenseService.signLicence(license,privateKey,digest);
+        licenseEncTextArea.textProperty().setValue(String.valueOf(license.get("licenseSignature")));
+        log.info("something happens");
+    }
+
+    @FXML
+    void handleVerifyButton(ActionEvent event) {
+
     }
 
 
