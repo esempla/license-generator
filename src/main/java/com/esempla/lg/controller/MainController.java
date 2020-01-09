@@ -147,6 +147,8 @@ public class MainController extends AbstractController{
 
 
     void binding(){
+//        signButton.disableProperty().bind(
+//                keysListView.getSelectionModel().selectedItemProperty().isNull());
     }
 
 
