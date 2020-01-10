@@ -4,9 +4,9 @@ License generator desktop application
 ## Package (Linux)
 
 ### Requirements
-[Insatall JDK 14](https://jdk.java.net/14/)<br>
-[Insatall JavaFX Linux SDK 13.0.1](http://gluonhq.com/download/javafx-13.0.1-sdk-linux/)<br>
-[Insatall JavaFX Linux jmods 13.0.1](https://gluonhq.com/download/javafx-13.0.1-jmods-linux/)<br>
+[Download Linux JDK 14](https://download.java.net/java/early_access/jdk14/30/GPL/openjdk-14-ea+30_linux-x64_bin.tar.gz)<br>
+[Download JavaFX Linux SDK 13.0.1](http://gluonhq.com/download/javafx-13.0.1-sdk-linux/)<br>
+[Download JavaFX Linux jmods 13.0.1](https://gluonhq.com/download/javafx-13.0.1-jmods-linux/)<br>
 
 
 #### Export these environment variables:
@@ -43,3 +43,33 @@ License generator desktop application
         --icon src/main/resources/icon.png \
         --add-modules javafx.controls,javafx.fxml \
         --main-class com.esempla.lg.Launcher
+        
+## Package (Windows)
+
+### Requirements
+[Download Windows JDK 14](https://download.java.net/java/early_access/jdk14/30/GPL/openjdk-14-ea+30_windows-x64_bin.zip)<br>
+[Download JavaFX Windows SDK 13.0.1](http://gluonhq.com/download/javafx-13.0.1-sdk-windows/)<br>
+[Download JavaFX Windows jmods 13.0.1](https://gluonhq.com/download/javafx-13.0.1-jmods-windows/)<br>
+[Inno Setup](http://www.jrsoftware.org/isdl.php)
+[Wix Setup](https://wixtoolset.org/)
+
+#### Export these environment variables:
+    setx /M PATH "%PATH%;C:\Program Files (x86)\Inno Setup 6"
+    set JDK_14="C:\Program Files\jdk-14"
+    set PATH_TO_FX="C:\Program Files\javafx-sdk-13\lib"
+    set PATH_TO_FX_MODS="C:\Program Files\javafx-jmods-13"
+    
+#### Compile your application:
+    dir /s /b src\*.java > sources.txt & javac --module-path %PATH_TO_FX% --add-modules javafx.controls,javafx.fxml --class-path libs\lombok-1.18.8.jar;libs\license3j-3.1.0.jar;libs\slf4j-api-1.7.25.jar -d out @sources.txt & del sources.txt
+
+#### Copy fxml files:
+    xcopy src\main\resources\fxmls out\fxmls
+
+#### Run and test:
+    java --module-path %PATH_TO_FX% --add-modules javafx.controls,javafx.fxml -cp out;libs\lombok-1.18.8.jar;libs\license3j-3.1.0.jar;libs\slf4j-api-1.7.25.jar com.esempla.lg.Launcher
+    
+#### Create a jar:
+    jar --create --file=libs\licensegen.jar --main-class=com.esempla.lg.Launcher -C out .
+
+#### Create the installer:
+    %JDK_14%\bin\jpackage --type msi --dest installer -i libs --main-jar licensegen.jar -n LicenseGen --module-path %PATH_TO_FX_MODS% --win-menu --win-shortcut --win-dir-chooser --icon src\main\resources\icon.ico --add-modules javafx.controls,javafx.fxml --main-class com.esempla.lg.Launcher
