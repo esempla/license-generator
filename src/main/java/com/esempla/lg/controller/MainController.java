@@ -13,6 +13,8 @@ import com.esempla.lg.util.KeyStorage;
 import com.esempla.lg.util.ViewsFactory;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -80,14 +82,8 @@ public class MainController extends AbstractController{
         keyStorage.getKeys().setAll(fileSystemUtil.loadKeys());
         log.info("keys loaded");
         keysListView.setItems(keyStorage.getKeys());
-        binding();
-        licenseTextArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                signButton.setDisable(!licenseService.isLicense(t1));
-                }
-        });
         digestChoiceBox.setItems(FXCollections.observableArrayList(Digest.values()));
+        binding();
     }
 
     @FXML
@@ -147,8 +143,16 @@ public class MainController extends AbstractController{
 
 
     void binding(){
-//        signButton.disableProperty().bind(
-//                keysListView.getSelectionModel().selectedItemProperty().isNull());
+
+                signButton.disableProperty().bind(
+                        keysListView.getSelectionModel().selectedItemProperty().isNull()
+                        .or(
+                                licenseTextArea.textProperty().isEmpty())
+                        .or(
+                                digestChoiceBox.getSelectionModel().selectedItemProperty().isNull())
+                        .or(
+                               Bindings.createBooleanBinding(() -> !licenseService.isLicense(licenseTextArea.textProperty()),licenseTextArea.textProperty())
+                        ));
     }
 
 
