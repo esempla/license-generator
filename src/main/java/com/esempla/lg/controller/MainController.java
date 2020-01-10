@@ -2,6 +2,7 @@ package com.esempla.lg.controller;
 
 import com.esempla.lg.Launcher;
 import com.esempla.lg.model.Digest;
+import com.esempla.lg.model.IOFormatUsed;
 import com.esempla.lg.model.Key;
 import com.esempla.lg.model.KeySize;
 import com.esempla.lg.service.FilesManager;
@@ -31,11 +32,17 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax0.license3j.License;
+import javax0.license3j.crypto.LicenseKeyPair;
+import javax0.license3j.io.IOFormat;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 @Slf4j
 public class MainController extends AbstractController{
@@ -79,11 +86,13 @@ public class MainController extends AbstractController{
 
     @FXML
     private void initialize() {
+//        staff();
         keyStorage.getKeys().setAll(fileSystemUtil.loadKeys());
         log.info("keys loaded");
         keysListView.setItems(keyStorage.getKeys());
         digestChoiceBox.setItems(FXCollections.observableArrayList(Digest.values()));
         binding();
+
     }
 
     @FXML
@@ -132,7 +141,7 @@ public class MainController extends AbstractController{
         String digest = digestChoiceBox.getSelectionModel().getSelectedItem().value();
         License license = License.Create.from(licenseTextArea.getText());
         licenseService.signLicence(license,privateKey,digest);
-        licenseEncTextArea.textProperty().setValue(String.valueOf(license.get("licenseSignature")));
+        licenseEncTextArea.textProperty().setValue(String.valueOf(license.get("licenseSignature")).substring(24));
         log.info("something happens");
     }
 
@@ -156,5 +165,7 @@ public class MainController extends AbstractController{
     }
 
 
+    void staff(){
 
+    }
 }

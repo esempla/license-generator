@@ -15,9 +15,11 @@ public class FileSystemUtil {
 
     public static String appHomeDir = ".licenseGenerator";
     public static String homeURL = System.getProperty("user.home") + File.separator + appHomeDir;
-    public static String keysDirectory = ".keys";
-    public static String logsHomeDirectory = ".logs";
+    public static String keysDirectory = "keys";
+    public static String logsHomeDirectory = "logs";
     public static String keysDirectoryPath = homeURL + File.separator + keysDirectory;
+    public static String defaultPublicKeyName = "public.key";
+    public static String defaultPrivateKeyName = "private.key";
     private FilesManager filesManager = new FilesManager();
     private KeyManager keyManager = new KeyManager();
 
@@ -28,7 +30,7 @@ public class FileSystemUtil {
             createKeysHomeFolder();
             log.info("Load keys from " + homeURL);
 
-            loadKeys();
+//            loadKeys();
         } else {
             log.info("Created the home directory: Path: " + homeURL);
             createHomeDirectory();
