@@ -2,7 +2,8 @@ package com.esempla.lg.service;
 
 import com.esempla.lg.model.Key;
 import javax0.license3j.crypto.LicenseKeyPair;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
@@ -10,8 +11,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
+
 public class KeyManager {
+
+    final static Logger log = LoggerFactory.getLogger(KeyManager.class);
 
     private FilesManager filesManager = new FilesManager();
 

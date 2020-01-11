@@ -2,6 +2,8 @@ HELP.md
 target/
 out/
 installer/
+mods/
+image/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**

@@ -29,14 +29,17 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax0.license3j.License;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.PrivateKey;
 
-@Slf4j
+
 public class MainController extends AbstractController{
+
+    final static Logger log = LoggerFactory.getLogger(MainController.class);
 
     private KeyStorage keyStorage;
     private FileSystemUtil fileSystemUtil;

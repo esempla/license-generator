@@ -1,13 +1,16 @@
 package com.esempla.lg.service;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
+
 public class FilesManager {
+
+    final static Logger log = LoggerFactory.getLogger(FilesManager.class);
 
     //returns all the files from a directory
     public List<File> listFiles(String directoryName) {
