@@ -35,11 +35,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax0.license3j.License;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax0.license3j.crypto.LicenseKeyPair;
 import javax0.license3j.io.IOFormat;
-import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -53,8 +54,10 @@ import java.util.List;
 
 import static com.esempla.lg.util.Anim.trueColor;
 
-@Slf4j
+
 public class MainController extends AbstractController{
+
+    final static Logger log = LoggerFactory.getLogger(MainController.class);
 
     private KeyStorage keyStorage;
     private FileSystemUtil fileSystemUtil;

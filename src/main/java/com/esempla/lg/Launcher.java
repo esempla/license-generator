@@ -1,6 +1,7 @@
 package com.esempla.lg;
 
 import com.esempla.lg.controller.MainController;
+import com.esempla.lg.service.KeyManager;
 import com.esempla.lg.util.FXMLLoaderProvider;
 import com.esempla.lg.util.FileSystemUtil;
 import com.esempla.lg.util.ViewsFactory;
@@ -8,12 +9,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-
-@Slf4j
 public class Launcher extends Application {
+
+    final static Logger log = LoggerFactory.getLogger(Launcher.class);
 
     public static void main(String[] args) {
         launch(args);

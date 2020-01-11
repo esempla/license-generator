@@ -3,15 +3,18 @@ package com.esempla.lg.util;
 import com.esempla.lg.model.Key;
 import com.esempla.lg.service.FilesManager;
 import com.esempla.lg.service.KeyManager;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
+
 public class FileSystemUtil {
+
+    final static Logger log = LoggerFactory.getLogger(FileSystemUtil.class);
 
     public static String appHomeDir = ".licenseGenerator";
     public static String homeURL = System.getProperty("user.home") + File.separator + appHomeDir;

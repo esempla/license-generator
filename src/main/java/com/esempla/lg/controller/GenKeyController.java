@@ -17,14 +17,17 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javax0.license3j.crypto.LicenseKeyPair;
 import javax0.license3j.io.IOFormat;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
 
-@Slf4j
+
 public class GenKeyController extends AbstractController{
+
+    final static Logger log = LoggerFactory.getLogger(GenKeyController.class);
 
     @FXML
     private ChoiceBox<EncryptAlghoritms> algorithmChoiceBox;

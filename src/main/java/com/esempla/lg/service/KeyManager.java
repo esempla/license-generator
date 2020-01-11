@@ -4,10 +4,12 @@ import com.esempla.lg.model.IOFormatUsed;
 import com.esempla.lg.model.Key;
 import com.esempla.lg.util.FileSystemUtil;
 import javax0.license3j.crypto.LicenseKeyPair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax0.license3j.io.IOFormat;
 import javax0.license3j.io.KeyPairReader;
 import javax0.license3j.io.KeyPairWriter;
-import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,8 +23,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
+
 public class KeyManager {
+
+    final static Logger log = LoggerFactory.getLogger(KeyManager.class);
 
     private FilesManager filesManager = new FilesManager();
 

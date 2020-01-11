@@ -11,8 +11,6 @@
     <properties>
         <java.version>13</java.version>
         <lombok.version>1.18.8</lombok.version>
-        <slf4j.version>1.7.25</slf4j.version>
-        <log4j.version>1.2.17</log4j.version>
     </properties>
 
     <dependencies>
@@ -27,11 +25,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.javax0.license3j</groupId>
@@ -52,14 +45,9 @@
                 <version>${java.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.3</version>
+                <version>1.3.0-alpha4</version>
             </dependency>
             <dependency>
                 <groupId>com.javax0.license3j</groupId>
@@ -75,19 +63,13 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <configuration>
-                    <stripDebug>true</stripDebug>
-                    <compress>2</compress>
-                    <noHeaderFiles>true</noHeaderFiles>
-                    <noManPages>true</noManPages>
-                    <launcher>launcher</launcher>
-                    <jlinkImageName>licensegen</jlinkImageName>
-                    <jlinkZipName>licensegenzip</jlinkZipName>
                     <mainClass>com.esempla.lg.Launcher</mainClass>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <inherited>true</inherited>
                 <configuration>
                     <release>${java.version}</release>
                 </configuration>
@@ -105,9 +87,107 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.moditect</groupId>
+                    <artifactId>moditect-maven-plugin</artifactId>
+                    <version>1.0.0.Beta2</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>jlink</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.moditect</groupId>
+                        <artifactId>moditect-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-module-info</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>add-module-info</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/modules</outputDirectory>
+                                    <modules>
+                                        <module>
+                                            <artifact>
+                                                <groupId>com.javax0.license3j</groupId>
+                                                <artifactId>license3j</artifactId>
+                                            </artifact>
+                                            <moduleInfo>
+                                                <name>license3j</name>
+                                            </moduleInfo>
+                                        </module>
+                                    </modules>
+                                    <overwriteExistingFiles>true</overwriteExistingFiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-runtime-image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>create-runtime-image</goal>
+                                </goals>
+                                <configuration>
+                                    <modulePath>
+                                        <path>${project.build.directory}/modules</path>
+                                        <path>/opt/javafx-jmods-13/</path>
+                                        <path>
+                                            ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
+                                        </path>
+                                        <path>
+                                            ${settings.localRepository}/org/slf4j/slf4j-api/1.8.0-beta1/slf4j-api-1.8.0-beta1.jar
+                                        </path>
+                                    </modulePath>
+                                    <modules>
+                                        <module>license.generator</module>
+                                    </modules>
+                                    <compression>2</compression>
+                                    <stripDebug>true</stripDebug>
+                                    <outputDirectory>${project.build.directory}/runtime-image</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>packages</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <echo message="Run jpakage"/>
+                                        <exec command="/opt/jdk-14/bin/jpackage">
+                                            <arg line="--type deb"/>
+                                            <arg line="--dest installer"/>
+                                            <arg line="--name LicenseGen"/>
+                                            <arg line="--linux-menu-group Utility"/>
+                                            <arg line="--linux-deb-maintainer admin@esempla.com"/>
+                                            <arg line="--linux-shortcut"/>
+                                            <arg line="--icon src/main/resources/icon.png"/>
+                                            <arg line="--module license.generator/com.esempla.lg.Launcher"/>
+                                            <arg line="--runtime-image target/runtime-image"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <pluginRepositories>
         <pluginRepository>
