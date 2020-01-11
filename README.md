@@ -103,5 +103,5 @@ License generator desktop application
 #### Create the installer:
     %JAVA_HOME%\bin\jpackage --type msi --dest installer -i libs --main-jar licensegen.jar -n LicenseGen --module-path %PATH_TO_FX_MODS% --win-menu --win-shortcut --win-dir-chooser --icon src\main\resources\icon.ico --add-modules javafx.controls,javafx.fxml --main-class com.esempla.lg.Launcher
 
-## Modular (maven)
+## Package Modular (maven)
     mvn clean package -Pjlink
