@@ -37,6 +37,8 @@ public class Launcher extends Application {
         controller.setStage(primaryStage);
 
         Scene scene = new Scene(borderPane);
+        scene.getStylesheets().add( getClass().getResource("/styles/styles.css").
+                toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();

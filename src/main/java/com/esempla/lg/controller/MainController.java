@@ -8,10 +8,11 @@ import com.esempla.lg.model.KeySize;
 import com.esempla.lg.service.FilesManager;
 import com.esempla.lg.service.KeyManager;
 import com.esempla.lg.service.LicenseService;
-import com.esempla.lg.util.FXMLLoaderProvider;
-import com.esempla.lg.util.FileSystemUtil;
-import com.esempla.lg.util.KeyStorage;
-import com.esempla.lg.util.ViewsFactory;
+import com.esempla.lg.util.*;
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
@@ -28,21 +29,29 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax0.license3j.License;
 import javax0.license3j.crypto.LicenseKeyPair;
 import javax0.license3j.io.IOFormat;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.IOException;
+import java.awt.*;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
+
+import static com.esempla.lg.util.Anim.trueColor;
 
 @Slf4j
 public class MainController extends AbstractController{
@@ -158,12 +167,18 @@ public class MainController extends AbstractController{
         String digest = digestChoiceBox.getSelectionModel().getSelectedItem().value();
        license = License.Create.from(licenseTextArea.getText());
         licenseService.signLicence(license,privateKey,digest);
-        licenseEncTextArea.textProperty().setValue(String.valueOf(license.get("licenseSignature")).substring(24));
-        log.info("something happens");
+        licenseEncTextArea.textProperty().setValue(Base64.getEncoder().encodeToString(license.serialized()));
+        log.info("sign happens");
     }
 
     @FXML
     void handleVerifyButton(ActionEvent event) {
+        PublicKey publicKey = keysListView.getSelectionModel().getSelectedItem().getKeyPair().getPair().getPublic();
+        InputStream inputStream = new ByteArrayInputStream(licenseEncTextArea.getText().getBytes(StandardCharsets.UTF_8));
+
+        License myLicense = licenseService.readLicenceFromStream(inputStream);
+        log.info(String.valueOf(myLicense.isOK(publicKey)));
+        blink();
 
     }
 
@@ -183,10 +198,35 @@ public class MainController extends AbstractController{
                 saveButton.disableProperty().bind(
                         licenseEncTextArea.textProperty().isEmpty()
                 );
+
+                verifyButton.disableProperty().bind(
+                        licenseEncTextArea.textProperty().isEmpty()
+                        .or(
+                                keysListView.getSelectionModel().selectedItemProperty().isNull())
+                );
+    }
+
+    void blink(){
+
+        log.info("blinking");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), evt -> licenseEncTextArea.setStyle("text-area-background: "+ format(trueColor) +";")));
+        timeline.setCycleCount(2);
+        timeline.play();
+        timeline.setOnFinished(actionEvent -> {
+            licenseEncTextArea.setStyle("text-area-background: "+ format(Anim.defaultColor) +";");
+        });
+    }
+
+    private String format(Color c) {
+        int r = (int) (c.getRed());
+        int g = (int) (c.getGreen());
+        int b = (int) (c.getBlue());
+        return String.format("#%02x%02x%02x", r, g, b);
     }
 
 
     void staff(){
+
 
     }
 }

@@ -6,21 +6,21 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;
 import javax0.license3j.License;
 import javax0.license3j.io.IOFormat;
+import javax0.license3j.io.LicenseReader;
 import javax0.license3j.io.LicenseWriter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 
 @Slf4j
 public class LicenseService {
+    private FilesManager filesManager = new FilesManager();
     public boolean isLicense(String string){
         log.info("checking if the string: "+string+" can be considered as a license");
         try{
@@ -58,16 +58,42 @@ public class LicenseService {
             licenseWriter = new LicenseWriter(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return false;
         }
         try {
-            if (licenseWriter != null) {
-                licenseWriter.write(license,format);
-            }
+            licenseWriter.write(license,format);
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
 
 
         return true;
     }
+    public License readLicenceFromFile(File file){
+        LicenseReader licenseReader = null;
+        try {
+            licenseReader = new LicenseReader(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            return  licenseReader.read(filesManager.getExtension(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public License readLicenceFromStream(InputStream inputStream){
+        LicenseReader licenseReader = new LicenseReader(inputStream);
+
+        try {
+            return  licenseReader.read(IOFormat.BASE64);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
