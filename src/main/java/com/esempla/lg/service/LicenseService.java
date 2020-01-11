@@ -24,12 +24,8 @@ import java.security.PrivateKey;
 public class LicenseService {
 
     final static Logger log = LoggerFactory.getLogger(LicenseService.class);
-
-    public SimpleBooleanProperty isLicense(StringProperty simpleStringProperty) {
-        log.info("checking if the string: \" " + simpleStringProperty.getValue() + "\" can be considered as a license");
-        try {
-            License.Create.from(simpleStringProperty.getValue());
     private FilesManager filesManager = new FilesManager();
+
     public boolean isLicense(String string){
         log.info("checking if the string: "+string+" can be considered as a license");
         try{
@@ -52,6 +48,7 @@ public class LicenseService {
         }
         return true;
     }
+
 
     public boolean signLicence(License license, PrivateKey key, String digest) {
         try {

@@ -30,6 +30,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -180,8 +181,12 @@ public class MainController extends AbstractController{
         InputStream inputStream = new ByteArrayInputStream(licenseEncTextArea.getText().getBytes(StandardCharsets.UTF_8));
 
         License myLicense = licenseService.readLicenceFromStream(inputStream);
-        log.info(String.valueOf(myLicense.isOK(publicKey)));
-        blink();
+        if (myLicense.isOK(publicKey)) {
+            blinkTrue();
+        } else {
+            blinkFalse();
+        }
+
 
     }
 
@@ -209,10 +214,20 @@ public class MainController extends AbstractController{
                 );
     }
 
-    void blink(){
+    void blinkTrue(){
 
         log.info("blinking");
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), evt -> licenseEncTextArea.setStyle("text-area-background: "+ format(trueColor) +";")));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.5), evt -> licenseEncTextArea.setStyle("text-area-background: "+ format(Anim.trueColor) +";")));
+        timeline.setCycleCount(2);
+        timeline.play();
+        timeline.setOnFinished(actionEvent -> {
+            licenseEncTextArea.setStyle("text-area-background: "+ format(Anim.defaultColor) +";");
+        });
+    }
+    void blinkFalse(){
+
+        log.info("blinking");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.5), evt -> licenseEncTextArea.setStyle("text-area-background: "+ format(Anim.falseColor) +";")));
         timeline.setCycleCount(2);
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
@@ -221,9 +236,9 @@ public class MainController extends AbstractController{
     }
 
     private String format(Color c) {
-        int r = (int) (c.getRed());
-        int g = (int) (c.getGreen());
-        int b = (int) (c.getBlue());
+        int r = (int) (255* c.getRed());
+        int g = (int) (255* c.getGreen());
+        int b = (int) (255* c.getBlue());
         return String.format("#%02x%02x%02x", r, g, b);
     }
 
