@@ -1,25 +1,15 @@
 package com.esempla.lg.controller;
 
-import com.esempla.lg.Launcher;
+
 import com.esempla.lg.model.Digest;
-import com.esempla.lg.model.IOFormatUsed;
 import com.esempla.lg.model.Key;
-import com.esempla.lg.model.KeySize;
 import com.esempla.lg.service.FilesManager;
 import com.esempla.lg.service.KeyManager;
 import com.esempla.lg.service.LicenseService;
 import com.esempla.lg.util.*;
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,7 +19,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -38,24 +27,11 @@ import javafx.util.Duration;
 import javax0.license3j.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax0.license3j.crypto.LicenseKeyPair;
-import javax0.license3j.io.IOFormat;
-
-
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
-
-import static com.esempla.lg.util.Anim.trueColor;
-
-
 public class MainController extends AbstractController{
 
     final static Logger log = LoggerFactory.getLogger(MainController.class);

@@ -9,16 +9,10 @@ import org.slf4j.LoggerFactory;
 import javax0.license3j.io.IOFormat;
 import javax0.license3j.io.KeyPairReader;
 import javax0.license3j.io.KeyPairWriter;
-
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,6 @@
 package com.esempla.lg;
 
 import com.esempla.lg.controller.MainController;
-import com.esempla.lg.service.KeyManager;
 import com.esempla.lg.util.FXMLLoaderProvider;
 import com.esempla.lg.util.FileSystemUtil;
 import com.esempla.lg.util.ViewsFactory;

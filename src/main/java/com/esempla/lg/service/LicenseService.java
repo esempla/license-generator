@@ -1,18 +1,12 @@
 package com.esempla.lg.service;
 
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableBooleanValue;
 import javax0.license3j.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax0.license3j.io.IOFormat;
 import javax0.license3j.io.LicenseReader;
 import javax0.license3j.io.LicenseWriter;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
