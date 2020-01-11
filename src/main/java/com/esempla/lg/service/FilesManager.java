@@ -1,5 +1,6 @@
 package com.esempla.lg.service;
 
+import javax0.license3j.io.IOFormat;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -145,5 +146,14 @@ public class FilesManager {
             e.printStackTrace();
         }
         return  data.toString();
+    }
+    public IOFormat getExtension(File file){
+        String extension = file.getName().substring(file.getName().indexOf(".")+1);
+        switch (extension) {
+            case "txt": return IOFormat.STRING;
+            case "bin": return IOFormat.BINARY;
+            case "base64": return IOFormat.BASE64;
+            default:return null;
+        }
     }
 }

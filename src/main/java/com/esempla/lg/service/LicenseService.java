@@ -5,11 +5,16 @@ import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;
 import javax0.license3j.License;
+import javax0.license3j.io.IOFormat;
+import javax0.license3j.io.LicenseWriter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -45,6 +50,24 @@ public class LicenseService {
             e.printStackTrace();
             return false;
         }
+        return true;
+    }
+    public boolean writeLicenceToFile(License license, File file, IOFormat format){
+        LicenseWriter licenseWriter = null;
+        try {
+            licenseWriter = new LicenseWriter(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (licenseWriter != null) {
+                licenseWriter.write(license,format);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         return true;
     }
 }

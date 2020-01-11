@@ -52,6 +52,7 @@ public class MainController extends AbstractController{
     private KeyManager keyManager;
     private FilesManager filesManager;
     private LicenseService licenseService;
+   private  License license;
 
     @FXML
     private ListView<Key> keysListView;
@@ -82,6 +83,7 @@ public class MainController extends AbstractController{
         this.keyManager = new KeyManager();
         this.filesManager = new FilesManager();
         this.licenseService = new LicenseService();
+        license = null;
     }
 
     @FXML
@@ -132,6 +134,21 @@ public class MainController extends AbstractController{
 
     @FXML
     void handleSaveButton(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter txtExtFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", ".txt");
+        FileChooser.ExtensionFilter binExtFilter = new FileChooser.ExtensionFilter("Binary files (*.bin)", ".bin");
+        FileChooser.ExtensionFilter base64ExtFilter = new FileChooser.ExtensionFilter("B64 files (*.base64)", ".base64");
+        fileChooser.getExtensionFilters().addAll(txtExtFilter,binExtFilter,base64ExtFilter);
+        File file = fileChooser.showSaveDialog(stage);
+
+
+        if (file != null) {
+
+            String extension = fileChooser.getSelectedExtensionFilter().getExtensions().get(0);
+            File fileWithExtension = new File(file.getPath()+extension);
+            log.info("save licence to file: "+fileWithExtension.getPath());
+            licenseService.writeLicenceToFile(license,fileWithExtension, filesManager.getExtension(fileWithExtension));
+        }
 
     }
 
@@ -139,7 +156,7 @@ public class MainController extends AbstractController{
     void handleSignButton(ActionEvent event) {
         PrivateKey privateKey = keysListView.getSelectionModel().getSelectedItem().getKeyPair().getPair().getPrivate();
         String digest = digestChoiceBox.getSelectionModel().getSelectedItem().value();
-        License license = License.Create.from(licenseTextArea.getText());
+       license = License.Create.from(licenseTextArea.getText());
         licenseService.signLicence(license,privateKey,digest);
         licenseEncTextArea.textProperty().setValue(String.valueOf(license.get("licenseSignature")).substring(24));
         log.info("something happens");
@@ -162,6 +179,10 @@ public class MainController extends AbstractController{
                         .or(
                                Bindings.createBooleanBinding(() -> !licenseService.isLicense(licenseTextArea.textProperty()),licenseTextArea.textProperty())
                         ));
+
+                saveButton.disableProperty().bind(
+                        licenseEncTextArea.textProperty().isEmpty()
+                );
     }
 
 
