@@ -137,6 +137,7 @@
                                     <modulePath>
                                         <path>${project.build.directory}/modules</path>
                                         <path>/opt/javafx-jmods-13/</path>
+                                        <path>${PATH_TO_FX_MODS}</path>
                                         <path>
                                             ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
                                         </path>
@@ -167,18 +168,10 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <echo message="Run jpakage"/>
-                                        <exec command="/opt/jdk-14/bin/jpackage">
-                                            <arg line="--type deb"/>
-                                            <arg line="--dest installer"/>
-                                            <arg line="--name LicenseGen"/>
-                                            <arg line="--linux-menu-group Utility"/>
-                                            <arg line="--linux-deb-maintainer admin@esempla.com"/>
-                                            <arg line="--linux-shortcut"/>
-                                            <arg line="--icon src/main/resources/icon.png"/>
-                                            <arg line="--module license.generator/com.esempla.lg.Launcher"/>
-                                            <arg line="--runtime-image target/runtime-image"/>
-                                        </exec>
+                                        <property name="version" value="${project.version}" />
+                                        <ant antfile="${basedir}/build.xml">
+                                            <target name="current" />
+                                        </ant>
                                     </target>
                                 </configuration>
                             </execution>

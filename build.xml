@@ -1,0 +1,70 @@
+<project>
+    <property environment="env"/>
+    <property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+
+    <condition property="platform" value="linux">
+        <os name="Linux" arch="i386"/>
+    </condition>
+    <condition property="platform" value="linux64">
+        <or>
+            <os name="Linux" arch="amd64"/>
+            <os name="Linux" arch="ia64"/>
+            <os name="Linux" arch="x86_64"/>
+        </or>
+    </condition>
+    <condition property="platform" value="mac">
+        <os family="mac"/>
+    </condition>
+    <condition property="platform" value="win32">
+        <os family="windows" arch="i386"/>
+    </condition>
+    <condition property="platform" value="win64">
+        <or>
+            <os family="windows" arch="amd64"/>
+            <os family="windows" arch="ia64"/>
+            <os family="windows" arch="x86_64"/>
+        </or>
+    </condition>
+    <condition property="platform" value="unknown">
+        <not>
+            <isset property="platform"/>
+        </not>
+    </condition>
+
+    <target name="linux64" depends="jpackage-linux64"/>
+    <target name="win64" depends="jpackage-win64"/>
+    <target name="current">
+        <antcall target="${platform}"/>
+    </target>
+
+    <target name="jpackage-win64">
+        <echo message="Run jpackage win64"/>
+        <exec command="${JAVA_HOME}\bin\jpackage">
+            <arg line="--type msi"/>
+            <arg line="--dest installer"/>
+            <arg line="--name LicenseGen"/>
+            <arg line="--win-menu"/>
+            <arg line="--win-menu-group LicenseGen"/>
+            <arg line="--win-dir-chooser"/>
+            <arg line="--win-shortcut"/>
+            <arg line="--icon src\main\resources\icon.ico"/>
+            <arg line="--module license.generator/com.esempla.lg.Launcher"/>
+            <arg line="--runtime-image target\runtime-image"/>
+        </exec>
+    </target>
+
+    <target name="jpackage-linux64">
+        <echo message="Run jpackage linux64"/>
+        <exec command="${JAVA_HOME}/bin/jpackage">
+            <arg line="--type deb"/>
+            <arg line="--dest installer"/>
+            <arg line="--name LicenseGen"/>
+            <arg line="--linux-menu-group Utility"/>
+            <arg line="--linux-deb-maintainer admin@esempla.com"/>
+            <arg line="--linux-shortcut"/>
+            <arg line="--icon src/main/resources/icon.png"/>
+            <arg line="--module license.generator/com.esempla.lg.Launcher"/>
+            <arg line="--runtime-image target/runtime-image"/>
+        </exec>
+    </target>
+</project>

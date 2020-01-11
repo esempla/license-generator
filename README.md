@@ -16,7 +16,7 @@ License generator desktop application
 #### Compile your application:
     javac --module-path $PATH_TO_FX \
         --add-modules javafx.controls,javafx.fxml \
-        --class-path libs/lombok-1.18.8.jar:libs/license3j-3.1.0.jar:libs/slf4j-api-1.7.25.jar \
+        --class-path libs/license3j-3.1.0.jar:libs/slf4j-api-1.8.0-beta1.jar \
         -d out $(find src -name "*.java")        
 
 #### Copy fxml files:
@@ -25,7 +25,7 @@ License generator desktop application
 #### Run and test:
     java --module-path $PATH_TO_FX \
         --add-modules javafx.controls,javafx.fxml \
-        --class-path out:libs/lombok-1.18.8.jar:libs/license3j-3.1.0.jar:libs/slf4j-api-1.7.25.jar \
+        --class-path out:libs/license3j-3.1.0.jar:libs/slf4j-api-1.8.0-beta1.jar \
         com.esempla.lg.Launcher
 
 #### Create a jar:
@@ -72,10 +72,7 @@ License generator desktop application
              --icon src/main/resources/icon.png \
              --module license.generator/com.esempla.lg.Launcher \
              --runtime-image target/runtime-image
-            
-### Modular (maven)
-    mvn clean package -Pjlink
-    
+                
 ## Package (Windows)
 
 ### Requirements
@@ -87,22 +84,24 @@ License generator desktop application
 
 #### Export these environment variables:
     setx /M PATH "%PATH%;C:\Program Files (x86)\Inno Setup 6"
-    set JDK_14="C:\Program Files\jdk-14"
-    set PATH_TO_FX="C:\Program Files\javafx-sdk-13\lib"
-    set PATH_TO_FX_MODS="C:\Program Files\javafx-jmods-13"
+    set JAVA_HOME="C:\jdk-14"
+    set PATH_TO_FX="C:\javafx-sdk-13\lib"
+    set PATH_TO_FX_MODS="C:\javafx-jmods-13"
     
 #### Compile your application:
-    dir /s /b src\*.java > sources.txt & javac --module-path %PATH_TO_FX% --add-modules javafx.controls,javafx.fxml --class-path libs\lombok-1.18.8.jar;libs\license3j-3.1.0.jar;libs\slf4j-api-1.7.25.jar -d out @sources.txt & del sources.txt
+    dir /s /b src\*.java > sources.txt & javac --module-path %PATH_TO_FX% --add-modules javafx.controls,javafx.fxml --class-path libs/license3j-3.1.0.jar:libs/slf4j-api-1.8.0-beta1.jar -d out @sources.txt & del sources.txt
 
 #### Copy fxml files:
     xcopy src\main\resources\fxmls out\fxmls
 
 #### Run and test:
-    java --module-path %PATH_TO_FX% --add-modules javafx.controls,javafx.fxml -cp out;libs\lombok-1.18.8.jar;libs\license3j-3.1.0.jar;libs\slf4j-api-1.7.25.jar com.esempla.lg.Launcher
+    java --module-path %PATH_TO_FX% --add-modules javafx.controls,javafx.fxml -cp out;libs/license3j-3.1.0.jar:libs/slf4j-api-1.8.0-beta1.jar com.esempla.lg.Launcher
     
 #### Create a jar:
     jar --create --file=libs\licensegen.jar --main-class=com.esempla.lg.Launcher -C out .
 
 #### Create the installer:
-    %JDK_14%\bin\jpackage --type msi --dest installer -i libs --main-jar licensegen.jar -n LicenseGen --module-path %PATH_TO_FX_MODS% --win-menu --win-shortcut --win-dir-chooser --icon src\main\resources\icon.ico --add-modules javafx.controls,javafx.fxml --main-class com.esempla.lg.Launcher
+    %JAVA_HOME%\bin\jpackage --type msi --dest installer -i libs --main-jar licensegen.jar -n LicenseGen --module-path %PATH_TO_FX_MODS% --win-menu --win-shortcut --win-dir-chooser --icon src\main\resources\icon.ico --add-modules javafx.controls,javafx.fxml --main-class com.esempla.lg.Launcher
 
+## Modular (maven)
+    mvn clean package -Pjlink
