@@ -136,7 +136,6 @@
                                 <configuration>
                                     <modulePath>
                                         <path>${project.build.directory}/modules</path>
-                                        <path>/opt/javafx-jmods-13/</path>
                                         <path>${PATH_TO_FX_MODS}</path>
                                         <path>
                                             ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
@@ -161,14 +160,14 @@
                         <version>1.8</version>
                         <executions>
                             <execution>
-                                <id>packages</id>
+                                <id>jpackage</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <property name="version" value="${project.version}" />
+                                        <property name="version" value="0.1" />
                                         <ant antfile="${basedir}/build.xml">
                                             <target name="current" />
                                         </ant>
@@ -181,12 +180,4 @@
             </build>
         </profile>
     </profiles>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>gluon-releases</id>
-            <url>http://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
 </project>
