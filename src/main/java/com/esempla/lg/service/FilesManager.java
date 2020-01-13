@@ -1,5 +1,7 @@
 package com.esempla.lg.service;
 
+import javax0.license3j.io.IOFormat;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,5 +150,14 @@ public class FilesManager {
             e.printStackTrace();
         }
         return  data.toString();
+    }
+    public IOFormat getExtension(File file){
+        String extension = file.getName().substring(file.getName().indexOf(".")+1);
+        switch (extension) {
+            case "txt": return IOFormat.STRING;
+            case "bin": return IOFormat.BINARY;
+            case "base64": return IOFormat.BASE64;
+            default:return null;
+        }
     }
 }

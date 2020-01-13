@@ -1,7 +1,6 @@
 package com.esempla.lg;
 
 import com.esempla.lg.controller.MainController;
-import com.esempla.lg.service.KeyManager;
 import com.esempla.lg.util.FXMLLoaderProvider;
 import com.esempla.lg.util.FileSystemUtil;
 import com.esempla.lg.util.ViewsFactory;
@@ -39,6 +38,8 @@ public class Launcher extends Application {
         controller.setStage(primaryStage);
 
         Scene scene = new Scene(borderPane);
+        scene.getStylesheets().add( getClass().getResource("/styles/styles.css").
+                toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();

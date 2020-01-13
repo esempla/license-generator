@@ -1,21 +1,15 @@
 package com.esempla.lg.controller;
 
-import com.esempla.lg.Launcher;
+
 import com.esempla.lg.model.Digest;
 import com.esempla.lg.model.Key;
-import com.esempla.lg.model.KeySize;
 import com.esempla.lg.service.FilesManager;
 import com.esempla.lg.service.KeyManager;
 import com.esempla.lg.service.LicenseService;
-import com.esempla.lg.util.FXMLLoaderProvider;
-import com.esempla.lg.util.FileSystemUtil;
-import com.esempla.lg.util.KeyStorage;
-import com.esempla.lg.util.ViewsFactory;
+import com.esempla.lg.util.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,18 +19,19 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax0.license3j.License;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
-
-
+import java.security.PublicKey;
+import java.util.Base64;
 public class MainController extends AbstractController{
 
     final static Logger log = LoggerFactory.getLogger(MainController.class);
@@ -46,6 +41,7 @@ public class MainController extends AbstractController{
     private KeyManager keyManager;
     private FilesManager filesManager;
     private LicenseService licenseService;
+   private  License license;
 
     @FXML
     private ListView<Key> keysListView;
@@ -76,21 +72,18 @@ public class MainController extends AbstractController{
         this.keyManager = new KeyManager();
         this.filesManager = new FilesManager();
         this.licenseService = new LicenseService();
+        license = null;
     }
 
     @FXML
     private void initialize() {
+//        staff();
         keyStorage.getKeys().setAll(fileSystemUtil.loadKeys());
         log.info("keys loaded");
         keysListView.setItems(keyStorage.getKeys());
-        binding();
-        licenseTextArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                signButton.setDisable(!licenseService.isLicense(t1));
-                }
-        });
         digestChoiceBox.setItems(FXCollections.observableArrayList(Digest.values()));
+        binding();
+
     }
 
     @FXML
@@ -130,6 +123,21 @@ public class MainController extends AbstractController{
 
     @FXML
     void handleSaveButton(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter txtExtFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", ".txt");
+        FileChooser.ExtensionFilter binExtFilter = new FileChooser.ExtensionFilter("Binary files (*.bin)", ".bin");
+        FileChooser.ExtensionFilter base64ExtFilter = new FileChooser.ExtensionFilter("B64 files (*.base64)", ".base64");
+        fileChooser.getExtensionFilters().addAll(txtExtFilter,binExtFilter,base64ExtFilter);
+        File file = fileChooser.showSaveDialog(stage);
+
+
+        if (file != null) {
+
+            String extension = fileChooser.getSelectedExtensionFilter().getExtensions().get(0);
+            File fileWithExtension = new File(file.getPath()+extension);
+            log.info("save licence to file: "+fileWithExtension.getPath());
+            licenseService.writeLicenceToFile(license,fileWithExtension, filesManager.getExtension(fileWithExtension));
+        }
 
     }
 
@@ -137,23 +145,82 @@ public class MainController extends AbstractController{
     void handleSignButton(ActionEvent event) {
         PrivateKey privateKey = keysListView.getSelectionModel().getSelectedItem().getKeyPair().getPair().getPrivate();
         String digest = digestChoiceBox.getSelectionModel().getSelectedItem().value();
-        License license = License.Create.from(licenseTextArea.getText());
+       license = License.Create.from(licenseTextArea.getText());
         licenseService.signLicence(license,privateKey,digest);
-        licenseEncTextArea.textProperty().setValue(String.valueOf(license.get("licenseSignature")));
-        log.info("something happens");
+        licenseEncTextArea.textProperty().setValue(Base64.getEncoder().encodeToString(license.serialized()));
+        log.info("sign happens");
     }
 
     @FXML
     void handleVerifyButton(ActionEvent event) {
+        PublicKey publicKey = keysListView.getSelectionModel().getSelectedItem().getKeyPair().getPair().getPublic();
+        InputStream inputStream = new ByteArrayInputStream(licenseEncTextArea.getText().getBytes(StandardCharsets.UTF_8));
+
+        License myLicense = licenseService.readLicenceFromStream(inputStream);
+        if (myLicense.isOK(publicKey)) {
+            blinkTrue();
+        } else {
+            blinkFalse();
+        }
+
 
     }
 
 
     void binding(){
-//        signButton.disableProperty().bind(
-//                keysListView.getSelectionModel().selectedItemProperty().isNull());
+
+                signButton.disableProperty().bind(
+                        keysListView.getSelectionModel().selectedItemProperty().isNull()
+                        .or(
+                                licenseTextArea.textProperty().isEmpty())
+                        .or(
+                                digestChoiceBox.getSelectionModel().selectedItemProperty().isNull())
+                        .or(
+                               Bindings.createBooleanBinding(() -> !licenseService.isLicense(licenseTextArea.textProperty()),licenseTextArea.textProperty())
+                        ));
+
+                saveButton.disableProperty().bind(
+                        licenseEncTextArea.textProperty().isEmpty()
+                );
+
+                verifyButton.disableProperty().bind(
+                        licenseEncTextArea.textProperty().isEmpty()
+                        .or(
+                                keysListView.getSelectionModel().selectedItemProperty().isNull())
+                );
+    }
+
+    void blinkTrue(){
+
+        log.info("blinking");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.5), evt -> licenseEncTextArea.setStyle("text-area-background: "+ format(Anim.trueColor) +";")));
+        timeline.setCycleCount(2);
+        timeline.play();
+        timeline.setOnFinished(actionEvent -> {
+            licenseEncTextArea.setStyle("text-area-background: "+ format(Anim.defaultColor) +";");
+        });
+    }
+    void blinkFalse(){
+
+        log.info("blinking");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(.5), evt -> licenseEncTextArea.setStyle("text-area-background: "+ format(Anim.falseColor) +";")));
+        timeline.setCycleCount(2);
+        timeline.play();
+        timeline.setOnFinished(actionEvent -> {
+            licenseEncTextArea.setStyle("text-area-background: "+ format(Anim.defaultColor) +";");
+        });
+    }
+
+    private String format(Color c) {
+        int r = (int) (255* c.getRed());
+        int g = (int) (255* c.getGreen());
+        int b = (int) (255* c.getBlue());
+        return String.format("#%02x%02x%02x", r, g, b);
     }
 
 
+    void staff(){
 
+
+    }
 }

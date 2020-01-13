@@ -29,24 +29,27 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
                 <Label text="Alghorithm" GridPane.halignment="CENTER" />
                 <Label text="Size" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <Label text="Name" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-                <Label text="Path" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                <Label text="Name" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                <Label text="Path" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
                 <ChoiceBox fx:id="algorithmChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                 <ChoiceBox fx:id="sizeChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                <TextField fx:id="nameTextField" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                <TextField fx:id="nameTextField" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                     <GridPane.margin>
                         <Insets right="5.0" />
                     </GridPane.margin>
                 </TextField>
-                <TextField fx:id="pathTextField" editable="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                <TextField fx:id="pathTextField" editable="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                     <GridPane.margin>
                         <Insets right="5.0" />
                     </GridPane.margin>
                 </TextField>
+            <Label text="Format" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <ChoiceBox fx:id="formatChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
             </children>
         </GridPane>
     </children>
