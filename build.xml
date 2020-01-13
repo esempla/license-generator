@@ -38,14 +38,14 @@
     </target>
 
     <target name="jpackage-win64">
-        <echo message="Run jpackage win64"/>
+        <echo message="Run jpackage from ${platform}"/>
         <exec command="${JAVA_HOME}\bin\jpackage">
             <arg line="--type exe"/>
             <arg line="--dest installer"/>
             <arg line="--name LicenseGen"/>
             <arg line="--vendor 'Esempla Systems S.R.L'"/>
             <arg line="--copyright 'Copyright © 2019 Esempla Systems. All rights reserved.'"/>
-            <arg line="--description 'Friendly license generator application'"/>
+            <arg line="--description 'Fast friendly license generator application'"/>
             <arg line="--license-file src\main\resources\license.txt"/>
             <arg line="--app-version ${version}"/>
             <arg line="--verbose"/>
@@ -60,15 +60,14 @@
     </target>
 
     <target name="jpackage-linux64">
-        <echo message="Run jpackage linux64"/>
+        <echo message="Run jpackage from ${platform}"/>
         <exec command="${JAVA_HOME}/bin/jpackage">
             <arg line="--type deb"/>
             <arg line="--dest installer"/>
             <arg line="--name LicenseGen"/>
             <arg line="--vendor 'Esempla Systems S.R.L'"/>
             <arg line="--copyright 'Copyright © 2019 Esempla Systems. All rights reserved.'"/>
-            <arg line="--description 'Friendly license generator application'"/>
-            <arg line="--license-file src/main/resources/license.txt"/>
+            <arg line="--description 'Fast friendly license generator application'"/>
             <arg line="--app-version ${version}"/>
             <arg line="--verbose"/>
             <arg line="--linux-menu-group Utility"/>
