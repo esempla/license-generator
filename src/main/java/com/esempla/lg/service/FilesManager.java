@@ -134,10 +134,12 @@ public class FilesManager {
         String extension = file.getName().substring(file.getName().indexOf(".") + 1);
         switch (extension) {
             case "txt":
-                return IOFormat.STRING;
+                return IOFormat.BASE64;
             case "bin":
                 return IOFormat.BINARY;
             case "base64":
+                return IOFormat.BASE64;
+            case "key":
                 return IOFormat.BASE64;
             default:
                 return null;

@@ -86,6 +86,7 @@ public class MainController extends AbstractController {
         log.info("keys loaded");
         keysListView.setItems(keyStorage.getKeys());
         digestChoiceBox.setItems(FXCollections.observableArrayList(Digest.values()));
+        digestChoiceBox.setValue(Digest.SHA256);
         binding();
     }
 
@@ -186,6 +187,25 @@ public class MainController extends AbstractController {
 
         alert.showAndWait();
 
+    }
+
+    @FXML
+    void handleUploadLicenseButton(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+            log.info(file.getName());
+        }
+        License license = licenseService.readLicenceFromFile(file);
+        if (license == null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Licence Reader");
+            alert.setContentText("Can't create license from file "+file.getName());
+            alert.showAndWait();
+        }else {
+            licenseEncTextArea.textProperty().setValue(Base64.getEncoder().encodeToString(license.serialized()));
+        }
     }
 
 
