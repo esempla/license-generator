@@ -1,7 +1,8 @@
 package com.esempla.lg.model;
 
 public enum EncryptAlghoritms {
-    RSA("RSA");
+    RSA("RSA"),
+    DSA("DSA");
 
 
     private String label;
