@@ -27,5 +27,7 @@ public class KeyStorage {
         this.keys.add(key);
     }
 
+    public void deleteKey(Key key){ this.keys.remove(key); }
+
     private ObservableList<Key> keys = FXCollections.observableArrayList();
 }

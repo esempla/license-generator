@@ -65,60 +65,44 @@ public class FilesManager {
         return false;
     }
 
-    public boolean createDirectory(String name, String path) {
+    public void createDirectory(String name, String path) {
         File theDir = new File(path + File.separator + name);
         if (!theDir.exists()) {
             log.info("creating directory: " + theDir.getName());
             try {
                 theDir.mkdir();
                 log.info(theDir.getName() + " created");
-                return true;
             } catch (SecurityException se) {
                 log.error("Error creation of directory : {}", se.getMessage());
             }
         }
-        return false;
     }
 
-    public byte[] readContentIntoByteArray(File file) {
-        FileInputStream fileInputStream = null;
-        byte[] bFile = new byte[(int) file.length()];
-        try {
-            //convert file into array of bytes
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(bFile);
-            fileInputStream.close();
-            for (int i = 0; i < bFile.length; i++) {
-                System.out.print((char) bFile[i]);
+    public void deleteFolderAndContent(File file) {
+        if (!file.exists())
+            return;
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                deleteFolderAndContent(f);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return bFile;
+        file.delete();
+       log.info("Deleted file/folder: "+file.getAbsolutePath());
     }
 
-    public boolean writeByteArrayToFile(byte[] bytes, File file) {
-        try (FileOutputStream output = new FileOutputStream(file)) {
-            output.write(bytes);
-        } catch (IOException e) {
-            log.error("Exception write byte array to file : {}", e.getMessage());
-        }
-        return false;
-    }
 
-    public boolean createFile(String name, String path) {
+
+    public void createFile(String name, String path) {
         try {
             File file = new File(path + File.separator + name);
             if (file.createNewFile()) {
                 log.info("File has been created successfully");
             } else {
-                log.info("File already present at the specified location");
+                log.warn("File already present at the specified location");
             }
-            return true;
         } catch (IOException e) {
             log.error("Exception Occurred in creation the file : {}", e.getMessage());
         }
-        return false;
     }
 
     /**
@@ -141,7 +125,7 @@ public class FilesManager {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Exception Occurred while reading from file : {}", e.getMessage());
         }
         return data.toString();
     }

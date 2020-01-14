@@ -14,10 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -68,6 +65,9 @@ public class MainController extends AbstractController {
 
     @FXML
     private Button saveButton;
+
+    @FXML
+    private MenuItem deleteKeyMenuItem;
 
     public MainController() {
         super(new FXMLLoaderProvider());
@@ -128,7 +128,7 @@ public class MainController extends AbstractController {
         FileChooser.ExtensionFilter txtExtFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", ".txt");
         FileChooser.ExtensionFilter binExtFilter = new FileChooser.ExtensionFilter("Binary files (*.bin)", ".bin");
         FileChooser.ExtensionFilter base64ExtFilter = new FileChooser.ExtensionFilter("B64 files (*.base64)", ".base64");
-        fileChooser.getExtensionFilters().addAll(txtExtFilter, binExtFilter, base64ExtFilter);
+        fileChooser.getExtensionFilters().addAll(base64ExtFilter, binExtFilter, txtExtFilter);
         File file = fileChooser.showSaveDialog(stage);
 
         if (file != null) {
@@ -157,32 +157,39 @@ public class MainController extends AbstractController {
         License myLicense = licenseService.readLicenceFromStream(inputStream);
         if (myLicense.isOK(publicKey)) {
             blinkTrue();
+            log.warn(" license is expider: " + myLicense.isExpired());
         } else {
             blinkFalse();
         }
     }
 
-    private void binding() {
-        signButton.disableProperty().bind(
-                keysListView.getSelectionModel().selectedItemProperty().isNull()
-                        .or(
-                                licenseTextArea.textProperty().isEmpty())
-                        .or(
-                                digestChoiceBox.getSelectionModel().selectedItemProperty().isNull())
-                        .or(
-                                Bindings.createBooleanBinding(() -> !licenseService.isLicense(licenseTextArea.textProperty()), licenseTextArea.textProperty())
-                        ));
-
-        saveButton.disableProperty().bind(
-                licenseEncTextArea.textProperty().isEmpty()
-        );
-
-        verifyButton.disableProperty().bind(
-                licenseEncTextArea.textProperty().isEmpty()
-                        .or(
-                                keysListView.getSelectionModel().selectedItemProperty().isNull())
-        );
+    @FXML
+    void handleCloseMenuButton(ActionEvent event) {
+        stage.close();
     }
+
+    @FXML
+    void handleDeleteKeyMenuButton(ActionEvent event) {
+        Key selectedKey = keysListView.getSelectionModel().getSelectedItem();
+        keyManager.deleteKeyFromRootFolder(selectedKey);
+        keyStorage.deleteKey(selectedKey);
+
+    }
+
+    @FXML
+    void handleAboutMenuButton(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText("Licence generator by ESEMPLA");
+        alert.setContentText("This app is used to generate licence for applications\n" +
+                "The root file ");
+
+        alert.showAndWait();
+
+    }
+
+
+
 
     private void blinkTrue() {
         log.info("blinking");
@@ -212,5 +219,32 @@ public class MainController extends AbstractController {
         int g = (int) (255 * c.getGreen());
         int b = (int) (255 * c.getBlue());
         return String.format("#%02x%02x%02x", r, g, b);
+    }
+
+
+    private void binding() {
+        signButton.disableProperty().bind(
+                keysListView.getSelectionModel().selectedItemProperty().isNull()
+                        .or(
+                                licenseTextArea.textProperty().isEmpty())
+                        .or(
+                                digestChoiceBox.getSelectionModel().selectedItemProperty().isNull())
+                        .or(
+                                Bindings.createBooleanBinding(() -> !licenseService.isLicense(licenseTextArea.textProperty()), licenseTextArea.textProperty())
+                        ));
+
+        saveButton.disableProperty().bind(
+                licenseEncTextArea.textProperty().isEmpty()
+        );
+
+        verifyButton.disableProperty().bind(
+                licenseEncTextArea.textProperty().isEmpty()
+                        .or(
+                                keysListView.getSelectionModel().selectedItemProperty().isNull())
+        );
+
+        deleteKeyMenuItem.disableProperty().bind(
+                keysListView.getSelectionModel().selectedItemProperty().isNull()
+        );
     }
 }

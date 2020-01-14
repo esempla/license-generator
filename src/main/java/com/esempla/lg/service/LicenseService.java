@@ -80,13 +80,13 @@ public class LicenseService {
         try {
             licenseReader = new LicenseReader(file);
         } catch (FileNotFoundException e) {
-            log.error("Error on read licence to file : {}.", e.getMessage());
+            log.error("Error on read licence from file : {}.", e.getMessage());
             return null;
         }
         try {
             return licenseReader.read(filesManager.getExtension(file));
         } catch (IOException e) {
-            log.error("Error on read licence to file : {}.", e.getMessage());
+            log.error("Error on read licence from file : {}.", e.getMessage());
             return null;
         }
     }
