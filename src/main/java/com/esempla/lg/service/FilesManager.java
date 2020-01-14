@@ -1,11 +1,13 @@
 package com.esempla.lg.service;
 
 import javax0.license3j.io.IOFormat;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,6 @@ public class FilesManager {
 
     final static Logger log = LoggerFactory.getLogger(FilesManager.class);
 
-    //returns all the files from a directory
     public List<File> listFiles(String directoryName) {
         log.info("gets all the files from " + directoryName);
 
@@ -30,10 +31,14 @@ public class FilesManager {
         return files;
     }
 
-    //returns all the directories from a directory
+    /**
+     * returns all the directories from a directory
+     *
+     * @param directoryName
+     * @return
+     */
     public List<File> listDirectories(String directoryName) {
         log.info("get all directories from " + directoryName);
-
         File directory = new File(directoryName);
         List<File> directories = new ArrayList<>();
 
@@ -62,22 +67,17 @@ public class FilesManager {
 
     public boolean createDirectory(String name, String path) {
         File theDir = new File(path + File.separator + name);
-        boolean result = false;
-// if the directory does not exist, create it
         if (!theDir.exists()) {
             log.info("creating directory: " + theDir.getName());
             try {
                 theDir.mkdir();
-                result = true;
-            } catch (SecurityException se) {
-                //handle it
-                log.info("creation of directory failed");
-            }
-            if (result) {
                 log.info(theDir.getName() + " created");
+                return true;
+            } catch (SecurityException se) {
+                log.error("Error creation of directory : {}", se.getMessage());
             }
         }
-        return result;
+        return false;
     }
 
     public byte[] readContentIntoByteArray(File file) {
@@ -98,47 +98,41 @@ public class FilesManager {
     }
 
     public boolean writeByteArrayToFile(byte[] bytes, File file) {
-        FileOutputStream output = null;
-        boolean success = false;
-        try {
-            output = new FileOutputStream(file);
+        try (FileOutputStream output = new FileOutputStream(file)) {
             output.write(bytes);
-            output.close();
-            success = true;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Exception write byte array to file : {}", e.getMessage());
         }
-        return success;
+        return false;
     }
 
-
     public boolean createFile(String name, String path) {
-        boolean success = false;
         try {
             File file = new File(path + File.separator + name);
-            boolean fvar = file.createNewFile();
-            if (fvar) {
+            if (file.createNewFile()) {
                 log.info("File has been created successfully");
-
             } else {
                 log.info("File already present at the specified location");
             }
-            success = true;
+            return true;
         } catch (IOException e) {
-            log.info("Exception Occurred in creation the file:");
-            e.printStackTrace();
+            log.error("Exception Occurred in creation the file : {}", e.getMessage());
         }
-        return success;
+        return false;
     }
 
-
-    //reads data from a file
-    public String readFromFile(File file){
-        log.info("reading data from file: "+file.getName());
+    /**
+     * reads data from a file
+     *
+     * @param file
+     * @return
+     */
+    public String readFromFile(File file) {
+        log.info("reading data from file: " + file.getName());
         StringBuilder data = new StringBuilder();
         try (FileInputStream fis = new FileInputStream(file)) {
 
-            log.info("Total file size to read (in bytes) : "+ fis.available());
+            log.info("Total file size to read (in bytes) : " + fis.available());
 
             int content;
             while ((content = fis.read()) != -1) {
@@ -149,15 +143,20 @@ public class FilesManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return  data.toString();
+        return data.toString();
     }
-    public IOFormat getExtension(File file){
-        String extension = file.getName().substring(file.getName().indexOf(".")+1);
+
+    public IOFormat getExtension(File file) {
+        String extension = file.getName().substring(file.getName().indexOf(".") + 1);
         switch (extension) {
-            case "txt": return IOFormat.STRING;
-            case "bin": return IOFormat.BINARY;
-            case "base64": return IOFormat.BASE64;
-            default:return null;
+            case "txt":
+                return IOFormat.STRING;
+            case "bin":
+                return IOFormat.BINARY;
+            case "base64":
+                return IOFormat.BASE64;
+            default:
+                return null;
         }
     }
 }

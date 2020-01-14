@@ -9,7 +9,6 @@ public enum EncryptAlghoritms {
         this.label = label;
     }
 
-
     public String toString() {
         return label;
     }

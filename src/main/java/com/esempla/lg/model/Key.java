@@ -10,8 +10,6 @@ public class Key {
     private final StringProperty name;
     private final ObjectProperty<LicenseKeyPair> keyPair;
 
-
-    //constr
     public Key() {
         this(null, null);
     }
@@ -20,9 +18,6 @@ public class Key {
         this.name = new SimpleStringProperty(name);
         this.keyPair = new SimpleObjectProperty<LicenseKeyPair>(keyPair);
     }
-
-    //getter
-
 
     public LicenseKeyPair getKeyPair() {
         return keyPair.get();
@@ -36,12 +31,10 @@ public class Key {
         return name.get();
     }
 
-    //setter
     public void setName(String name) {
         this.name.set(name);
     }
 
-    //property
     public StringProperty nameProperty() {
         return name;
     }

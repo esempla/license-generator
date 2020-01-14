@@ -1,7 +1,7 @@
 .text-area {
-    text-area-background: lightgrey ;
+    text-area-background: lightgrey;
 }
 
 .text-area .content {
-    -fx-background-color: text-area-background ;
+    -fx-background-color: text-area-background;
 }

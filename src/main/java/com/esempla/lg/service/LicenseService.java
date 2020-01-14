@@ -2,99 +2,102 @@ package com.esempla.lg.service;
 
 import javafx.beans.property.StringProperty;
 import javax0.license3j.License;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import javax0.license3j.io.IOFormat;
 import javax0.license3j.io.LicenseReader;
 import javax0.license3j.io.LicenseWriter;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.*;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.PrivateKey;
 
 public class LicenseService {
 
     final static Logger log = LoggerFactory.getLogger(LicenseService.class);
-    private FilesManager filesManager = new FilesManager();
 
-    public boolean isLicense(String string){
-        log.info("checking if the string: "+string+" can be considered as a license");
-        try{
+    private FilesManager filesManager;
+
+    public LicenseService() {
+        this.filesManager = new FilesManager();
+    }
+
+    public boolean isLicense(String string) {
+        log.info("checking if the string: " + string + " can be considered as a license.");
+        try {
             License.Create.from(string);
             log.info("can create the license");
         } catch (Exception e) {
-            log.info("can not create the license");
-            return false;
-        }
-        return true;
-    }
-    public boolean isLicense(StringProperty simpleStringProperty){
-        log.info("checking if the string: "+simpleStringProperty.getValue()+" can be considered as a license");
-        try{
-            License.Create.from(simpleStringProperty.getValue());
-            log.info("can create the license");
-        } catch (Exception e) {
-            log.info("can not create the license");
+            log.error("Error. Can not create the license");
             return false;
         }
         return true;
     }
 
+    public boolean isLicense(StringProperty simpleStringProperty) {
+        log.info("checking if the string: " + simpleStringProperty.getValue() + " can be considered as a license.");
+        try {
+            License.Create.from(simpleStringProperty.getValue());
+            log.info("can create the license");
+        } catch (Exception e) {
+            log.error("Error. Can not create the license.");
+            return false;
+        }
+        return true;
+    }
 
     public boolean signLicence(License license, PrivateKey key, String digest) {
         try {
             license.sign(key, digest);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("Error");
             return false;
         }
         return true;
     }
-    public boolean writeLicenceToFile(License license, File file, IOFormat format){
+
+    public boolean writeLicenceToFile(License license, File file, IOFormat format) {
         LicenseWriter licenseWriter = null;
         try {
             licenseWriter = new LicenseWriter(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("Error on write licence to file : {}.", e.getMessage());
             return false;
         }
         try {
-            licenseWriter.write(license,format);
+            licenseWriter.write(license, format);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error on write licence to file : {}.", e.getMessage());
             return false;
         }
-
-
         return true;
     }
-    public License readLicenceFromFile(File file){
+
+    public License readLicenceFromFile(File file) {
         LicenseReader licenseReader = null;
         try {
             licenseReader = new LicenseReader(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("Error on read licence to file : {}.", e.getMessage());
             return null;
         }
         try {
-            return  licenseReader.read(filesManager.getExtension(file));
+            return licenseReader.read(filesManager.getExtension(file));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error on read licence to file : {}.", e.getMessage());
             return null;
         }
     }
-    public License readLicenceFromStream(InputStream inputStream){
+
+    public License readLicenceFromStream(InputStream inputStream) {
         LicenseReader licenseReader = new LicenseReader(inputStream);
-
         try {
-            return  licenseReader.read(IOFormat.BASE64);
+            return licenseReader.read(IOFormat.BASE64);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
-
 }

@@ -17,7 +17,5 @@ public enum KeySize {
     public Integer value() {
         return size;
     }
-
-
 }
 

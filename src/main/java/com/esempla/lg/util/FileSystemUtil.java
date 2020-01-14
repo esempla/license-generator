@@ -7,10 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 
 public class FileSystemUtil {
 
@@ -32,8 +30,6 @@ public class FileSystemUtil {
             log.info("check if the keys home folder exists. If not, it is created");
             createKeysHomeFolder();
             log.info("Load keys from " + homeURL);
-
-//            loadKeys();
         } else {
             log.info("Created the home directory: Path: " + homeURL);
             createHomeDirectory();
@@ -47,18 +43,16 @@ public class FileSystemUtil {
     }
 
     private void createHomeDirectory() {
-        filesManager.createDirectory(appHomeDir, System.getProperty("user.home").toString());
+        filesManager.createDirectory(appHomeDir, System.getProperty("user.home"));
         filesManager.createDirectory(keysDirectory, homeURL);
         filesManager.createDirectory(logsHomeDirectory, homeURL);
     }
 
     private boolean homeExists() {
-        return filesManager.isInDirectory(appHomeDir, System.getProperty("user.home").toString());
+        return filesManager.isInDirectory(appHomeDir, System.getProperty("user.home"));
     }
 
     public List<Key> loadKeys() {
-        List<Key> keys = new ArrayList<>();
-        keys = Objects.requireNonNull(keyManager.getKeysFromRootAppFolder(keysDirectoryPath));
-        return keys;
+        return Objects.requireNonNull(keyManager.getKeysFromRootAppFolder(keysDirectoryPath));
     }
 }

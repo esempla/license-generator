@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
 public class Launcher extends Application {
 
     final static Logger log = LoggerFactory.getLogger(Launcher.class);
@@ -38,7 +39,7 @@ public class Launcher extends Application {
         controller.setStage(primaryStage);
 
         Scene scene = new Scene(borderPane);
-        scene.getStylesheets().add( getClass().getResource("/styles/styles.css").
+        scene.getStylesheets().add(getClass().getResource("/styles/styles.css").
                 toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);

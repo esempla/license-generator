@@ -10,7 +10,6 @@ public enum Digest {
         this.label = label;
     }
 
-
     public String toString() {
         return label;
     }

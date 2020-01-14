@@ -9,10 +9,11 @@ public class KeyStorage {
 
     private static KeyStorage instance;
 
-    private KeyStorage(){}
+    private KeyStorage() {
+    }
 
-    public static KeyStorage getInstance(){
-        if(instance == null){
+    public static KeyStorage getInstance() {
+        if (instance == null) {
             instance = new KeyStorage();
         }
         return instance;

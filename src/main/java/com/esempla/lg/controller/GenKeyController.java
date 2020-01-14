@@ -19,12 +19,10 @@ import javax0.license3j.io.IOFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
 
-
-public class GenKeyController extends AbstractController{
+public class GenKeyController extends AbstractController {
 
     final static Logger log = LoggerFactory.getLogger(GenKeyController.class);
 
@@ -34,30 +32,24 @@ public class GenKeyController extends AbstractController{
     private ChoiceBox<KeySize> sizeChoiceBox;
     @FXML
     private ChoiceBox<IOFormat> formatChoiceBox;
-
     @FXML
     private TextField nameTextField;
-
     @FXML
     private TextField pathTextField;
-
     @FXML
     private Button generateButton;
 
-    private FileSystemUtil fileSystemUtil;
     private KeyManager keyManager;
     private KeyStorage keyStorage;
 
     public GenKeyController() {
         super(new FXMLLoaderProvider());
-        this.fileSystemUtil = new FileSystemUtil();
         this.keyStorage = KeyStorage.getInstance();
         this.keyManager = new KeyManager();
     }
 
     @FXML
     private void initialize() {
-
         algorithmChoiceBox.setItems(FXCollections.observableArrayList(EncryptAlghoritms.values()));
         sizeChoiceBox.setItems(FXCollections.observableArrayList(KeySize.values()));
         formatChoiceBox.setItems(FXCollections.observableArrayList(IOFormatUsed.getMatch()));
@@ -80,11 +72,12 @@ public class GenKeyController extends AbstractController{
                     )
             );
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            log.error("Error on generate key : {}", e.getMessage());
         }
         log.info(algorithmChoiceBox.getSelectionModel().getSelectedItem().value());
         keyStorage.addKey(genKey);
-        keyManager.writeKeyToFile(genKey, FileSystemUtil.keysDirectoryPath, formatChoiceBox.getSelectionModel().getSelectedItem());
+        keyManager.writeKeyToFile(genKey, FileSystemUtil.keysDirectoryPath,
+                formatChoiceBox.getSelectionModel().getSelectedItem());
         stage.close();
     }
 
@@ -99,6 +92,5 @@ public class GenKeyController extends AbstractController{
                         .or(nameTextField.textProperty().isEmpty())
                         .or(formatChoiceBox.getSelectionModel().selectedItemProperty().isNull())
                         .or(sizeChoiceBox.getSelectionModel().selectedItemProperty().isNull()));
-
     }
 }
