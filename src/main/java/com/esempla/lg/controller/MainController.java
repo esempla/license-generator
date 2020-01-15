@@ -166,7 +166,6 @@ public class MainController extends AbstractController {
         License myLicense = licenseService.readLicenceFromStream(inputStream);
         if (myLicense.isOK(publicKey)) {
             blinkTrue();
-            log.warn(" license is expider: " + myLicense.isExpired());
         } else {
             blinkFalse();
         }
