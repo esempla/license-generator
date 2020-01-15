@@ -14,11 +14,9 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -36,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
+import java.util.Optional;
 
 public class MainController extends AbstractController {
 
@@ -69,6 +68,15 @@ public class MainController extends AbstractController {
     @FXML
     private Button saveButton;
 
+    @FXML
+    private MenuItem deleteKeyMenuItem;
+
+    @FXML
+    private MenuItem showDumpPublicKeyMItem;
+
+    @FXML
+    private MenuItem saveDumpPublicKeyMItem;
+
     public MainController() {
         super(new FXMLLoaderProvider());
         log.info("constructor");
@@ -86,6 +94,7 @@ public class MainController extends AbstractController {
         log.info("keys loaded");
         keysListView.setItems(keyStorage.getKeys());
         digestChoiceBox.setItems(FXCollections.observableArrayList(Digest.values()));
+        digestChoiceBox.setValue(Digest.SHA256);
         binding();
     }
 
@@ -128,7 +137,7 @@ public class MainController extends AbstractController {
         FileChooser.ExtensionFilter txtExtFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", ".txt");
         FileChooser.ExtensionFilter binExtFilter = new FileChooser.ExtensionFilter("Binary files (*.bin)", ".bin");
         FileChooser.ExtensionFilter base64ExtFilter = new FileChooser.ExtensionFilter("B64 files (*.base64)", ".base64");
-        fileChooser.getExtensionFilters().addAll(txtExtFilter, binExtFilter, base64ExtFilter);
+        fileChooser.getExtensionFilters().addAll(base64ExtFilter, binExtFilter, txtExtFilter);
         File file = fileChooser.showSaveDialog(stage);
 
         if (file != null) {
@@ -162,27 +171,105 @@ public class MainController extends AbstractController {
         }
     }
 
-    private void binding() {
-        signButton.disableProperty().bind(
-                keysListView.getSelectionModel().selectedItemProperty().isNull()
-                        .or(
-                                licenseTextArea.textProperty().isEmpty())
-                        .or(
-                                digestChoiceBox.getSelectionModel().selectedItemProperty().isNull())
-                        .or(
-                                Bindings.createBooleanBinding(() -> !licenseService.isLicense(licenseTextArea.textProperty()), licenseTextArea.textProperty())
-                        ));
-
-        saveButton.disableProperty().bind(
-                licenseEncTextArea.textProperty().isEmpty()
-        );
-
-        verifyButton.disableProperty().bind(
-                licenseEncTextArea.textProperty().isEmpty()
-                        .or(
-                                keysListView.getSelectionModel().selectedItemProperty().isNull())
-        );
+    @FXML
+    void handleCloseMenuButton(ActionEvent event) {
+        stage.close();
     }
+
+    @FXML
+    void handleDeleteKeyMenuButton(ActionEvent event) {
+        Key selectedKey = keysListView.getSelectionModel().getSelectedItem();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete key");
+        alert.setHeaderText(selectedKey.getName());
+        alert.setResizable(false);
+        alert.setContentText("By deleting this key you won't be able to restore it any more");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isEmpty()){
+            log.info("delete alert was closed");
+        }
+         else if(result.get() == ButtonType.OK){
+            keyManager.deleteKeyFromRootFolder(selectedKey);
+            keyStorage.deleteKey(selectedKey);
+            log.info("delete key was approved");
+        }
+        else if(result.get() == ButtonType.CANCEL){
+            log.info("delete key was canceled");
+        }
+
+    }
+
+    @FXML
+    void handleAboutMenuButton(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText("Licence generator by ESEMPLA");
+        alert.setContentText("This app is used to generate licence for applications\n" +
+                "The root file ");
+
+        alert.showAndWait();
+
+    }
+
+    @FXML
+    void handleUploadLicenseButton(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+            log.info(file.getName());
+        }
+        License license = licenseService.readLicenceFromFile(file);
+        if (license == null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Licence Reader");
+            alert.setContentText("Can't create license from file "+file.getName());
+            alert.showAndWait();
+        }else {
+            licenseEncTextArea.textProperty().setValue(Base64.getEncoder().encodeToString(license.serialized()));
+        }
+    }
+
+    @FXML
+    void handleShowDumpPublicKey(ActionEvent event) {
+        TextArea textArea = new TextArea("YOUR_MESSAGE_HERE");
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        GridPane gridPane = new GridPane();
+        gridPane.setMaxWidth(Double.MAX_VALUE);
+        gridPane.add(textArea, 0, 0);
+
+        Key key = keysListView.getSelectionModel().getSelectedItem();
+        textArea.textProperty().setValue(keyManager.dump(key.getKeyPair().getPublic()));
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Dump Key");
+        alert.setHeaderText(key.getName());
+        alert.getDialogPane().setContent(gridPane);
+        alert.showAndWait();
+    }
+
+    @FXML
+    void handleSaveDumpPublicKey(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter txtExtFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", ".txt");
+        fileChooser.getExtensionFilters().addAll(txtExtFilter);
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            String extension = fileChooser.getSelectedExtensionFilter().getExtensions().get(0);
+            File fileWithExtension = new File(file.getPath() + extension);
+            log.info("save dump key to file: " + fileWithExtension.getPath());
+            filesManager.writeToFile(
+                    keyManager.dump(keysListView.getSelectionModel().getSelectedItem().getKeyPair().getPublic()),
+                    fileWithExtension);
+        }
+
+
+    }
+
+
+
 
     private void blinkTrue() {
         log.info("blinking");
@@ -212,5 +299,39 @@ public class MainController extends AbstractController {
         int g = (int) (255 * c.getGreen());
         int b = (int) (255 * c.getBlue());
         return String.format("#%02x%02x%02x", r, g, b);
+    }
+
+
+    private void binding() {
+        signButton.disableProperty().bind(
+                keysListView.getSelectionModel().selectedItemProperty().isNull()
+                        .or(
+                                licenseTextArea.textProperty().isEmpty())
+                        .or(
+                                digestChoiceBox.getSelectionModel().selectedItemProperty().isNull())
+                        .or(
+                                Bindings.createBooleanBinding(() -> !licenseService.isLicense(licenseTextArea.textProperty()), licenseTextArea.textProperty())
+                        ));
+
+        saveButton.disableProperty().bind(
+                licenseEncTextArea.textProperty().isEmpty()
+        );
+
+        verifyButton.disableProperty().bind(
+                licenseEncTextArea.textProperty().isEmpty()
+                        .or(
+                                keysListView.getSelectionModel().selectedItemProperty().isNull())
+        );
+
+        deleteKeyMenuItem.disableProperty().bind(
+                keysListView.getSelectionModel().selectedItemProperty().isNull()
+        );
+
+        showDumpPublicKeyMItem.disableProperty().bind(
+                keysListView.getSelectionModel().selectedItemProperty().isNull()
+        );
+        saveDumpPublicKeyMItem.disableProperty().bind(
+                keysListView.getSelectionModel().selectedItemProperty().isNull()
+        );
     }
 }

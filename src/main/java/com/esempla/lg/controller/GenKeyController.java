@@ -51,8 +51,14 @@ public class GenKeyController extends AbstractController {
     @FXML
     private void initialize() {
         algorithmChoiceBox.setItems(FXCollections.observableArrayList(EncryptAlghoritms.values()));
+        algorithmChoiceBox.setValue(EncryptAlghoritms.RSA);
+
         sizeChoiceBox.setItems(FXCollections.observableArrayList(KeySize.values()));
+        sizeChoiceBox.setValue(KeySize.S2048);
+
         formatChoiceBox.setItems(FXCollections.observableArrayList(IOFormatUsed.getMatch()));
+        formatChoiceBox.setValue(IOFormat.BASE64);
+
         pathTextField.textProperty().set(FileSystemUtil.keysDirectoryPath);
         nameTextField.textProperty().addListener((observableValue, oldValue, newValue) -> {
             pathTextField.textProperty().set(FileSystemUtil.keysDirectoryPath + File.separator + newValue);

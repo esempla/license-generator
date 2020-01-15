@@ -14,8 +14,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Formatter;
 import java.util.List;
 
 
@@ -28,7 +31,9 @@ public class KeyManager {
     public List<Key> getKeysFromRootAppFolder(String path) {
         List<Key> keys = new ArrayList<>();
         for (File file : filesManager.listDirectories(path)) {
-            keys.add(loadKeyFromFolder(file.getName(), path));
+            Key key = loadKeyFromFolder(file.getName(), path);
+            if (key != null)
+                keys.add(key);
         }
         return keys;
     }
@@ -42,14 +47,26 @@ public class KeyManager {
                 new File(path + File.separator + key.getName() + File.separator + FileSystemUtil.defaultPublicKeyName);
         LicenseKeyPair privateLicenseKeyPair = loadPrivateKey(privateKeyFile);
         LicenseKeyPair publicLicenseKeyPair = loadPublicKey(publicKeyFile);
+        if (privateLicenseKeyPair == null && publicLicenseKeyPair == null){
+            return null;
+        }
         key.setKeyPair(LicenseKeyPair.Create.from(
                 publicLicenseKeyPair.getPair().getPublic(),
                 privateLicenseKeyPair.getPair().getPrivate(), privateLicenseKeyPair.cipher())
         );
+        log.info("This are key bytes: "+ Arrays.toString(key.getKeyPair().getPublic().clone()));
+        log.info("Dump key: "+dump(key.getKeyPair().getPublic()));
         return key;
     }
 
-    public boolean writeKeyToFile(Key key, String path, IOFormat format) {
+    public void deleteKeyFromRootFolder(Key key){
+        File keyFolder =
+                new File(FileSystemUtil.keysDirectoryPath + File.separator + key.getName());
+        filesManager.deleteFolderAndContent(keyFolder);
+        log.info("deletedKey");
+    }
+
+    public void writeKeyToFile(Key key, String path, IOFormat format) {
         filesManager.createDirectory(key.getName(), path);
         filesManager.createFile(FileSystemUtil.defaultPrivateKeyName, path + File.separator + key.getName());
         filesManager.createFile(FileSystemUtil.defaultPublicKeyName, path + File.separator + key.getName());
@@ -62,9 +79,7 @@ public class KeyManager {
             keyPairWriter.write(key.getKeyPair(), format);
         } catch (IOException e) {
            log.error("Error on write key to file {}.", e.getMessage());
-            return false;
         }
-        return true;
     }
 
     private LicenseKeyPair loadPrivateKey(File file) {
@@ -72,7 +87,7 @@ public class KeyManager {
         try {
             keyPairReader = new KeyPairReader(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("Can't create the keyPairReader {} ", e.getMessage());
         }
         for (IOFormat format : IOFormatUsed.getMatch()) {
             try {
@@ -80,8 +95,10 @@ public class KeyManager {
                 if (keyPairReader != null) {
                     (new KeyPairReader(file)).readPrivate(format);
                     licenseKeyPair = keyPairReader.readPrivate(format);
+//
                 }
                 if (licenseKeyPair != null) {
+
                     return licenseKeyPair;
                 }
             } catch (Exception e) {
@@ -109,9 +126,17 @@ public class KeyManager {
                     return licenseKeyPair;
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
+                log.error("Error on load private key {} ", e.getMessage());
             }
         }
         return null;
+    }
+    public String dump(byte[] key){
+
+        Formatter formatter = new Formatter();
+        for (byte b : key) {
+            formatter.format( "(byte) 0x%02X, ", b);
+        }
+       return formatter.toString();
     }
 }
