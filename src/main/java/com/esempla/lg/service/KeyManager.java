@@ -14,8 +14,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Formatter;
 import java.util.List;
 
 
@@ -51,6 +54,8 @@ public class KeyManager {
                 publicLicenseKeyPair.getPair().getPublic(),
                 privateLicenseKeyPair.getPair().getPrivate(), privateLicenseKeyPair.cipher())
         );
+        log.info("This are key bytes: "+ Arrays.toString(key.getKeyPair().getPublic().clone()));
+        log.info("Dump key: "+dump(key.getKeyPair().getPublic()));
         return key;
     }
 
@@ -90,8 +95,10 @@ public class KeyManager {
                 if (keyPairReader != null) {
                     (new KeyPairReader(file)).readPrivate(format);
                     licenseKeyPair = keyPairReader.readPrivate(format);
+//
                 }
                 if (licenseKeyPair != null) {
+
                     return licenseKeyPair;
                 }
             } catch (Exception e) {
@@ -123,5 +130,13 @@ public class KeyManager {
             }
         }
         return null;
+    }
+    public String dump(byte[] key){
+
+        Formatter formatter = new Formatter();
+        for (byte b : key) {
+            formatter.format( "(byte) 0x%02X, ", b);
+        }
+       return formatter.toString();
     }
 }

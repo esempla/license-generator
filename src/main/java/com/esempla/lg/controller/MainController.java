@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -33,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
+import java.util.Optional;
 
 public class MainController extends AbstractController {
 
@@ -68,6 +70,12 @@ public class MainController extends AbstractController {
 
     @FXML
     private MenuItem deleteKeyMenuItem;
+
+    @FXML
+    private MenuItem showDumpPublicKeyMItem;
+
+    @FXML
+    private MenuItem saveDumpPublicKeyMItem;
 
     public MainController() {
         super(new FXMLLoaderProvider());
@@ -172,8 +180,24 @@ public class MainController extends AbstractController {
     @FXML
     void handleDeleteKeyMenuButton(ActionEvent event) {
         Key selectedKey = keysListView.getSelectionModel().getSelectedItem();
-        keyManager.deleteKeyFromRootFolder(selectedKey);
-        keyStorage.deleteKey(selectedKey);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete key");
+        alert.setHeaderText(selectedKey.getName());
+        alert.setResizable(false);
+        alert.setContentText("By deleting this key you won't be able to restore it any more");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isEmpty()){
+            log.info("delete alert was closed");
+        }
+         else if(result.get() == ButtonType.OK){
+            keyManager.deleteKeyFromRootFolder(selectedKey);
+            keyStorage.deleteKey(selectedKey);
+            log.info("delete key was approved");
+        }
+        else if(result.get() == ButtonType.CANCEL){
+            log.info("delete key was canceled");
+        }
 
     }
 
@@ -206,6 +230,43 @@ public class MainController extends AbstractController {
         }else {
             licenseEncTextArea.textProperty().setValue(Base64.getEncoder().encodeToString(license.serialized()));
         }
+    }
+
+    @FXML
+    void handleShowDumpPublicKey(ActionEvent event) {
+        TextArea textArea = new TextArea("YOUR_MESSAGE_HERE");
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        GridPane gridPane = new GridPane();
+        gridPane.setMaxWidth(Double.MAX_VALUE);
+        gridPane.add(textArea, 0, 0);
+
+        Key key = keysListView.getSelectionModel().getSelectedItem();
+        textArea.textProperty().setValue(keyManager.dump(key.getKeyPair().getPublic()));
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Dump Key");
+        alert.setHeaderText(key.getName());
+        alert.getDialogPane().setContent(gridPane);
+        alert.showAndWait();
+    }
+
+    @FXML
+    void handleSaveDumpPublicKey(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter txtExtFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", ".txt");
+        fileChooser.getExtensionFilters().addAll(txtExtFilter);
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            String extension = fileChooser.getSelectedExtensionFilter().getExtensions().get(0);
+            File fileWithExtension = new File(file.getPath() + extension);
+            log.info("save dump key to file: " + fileWithExtension.getPath());
+            filesManager.writeToFile(
+                    keyManager.dump(keysListView.getSelectionModel().getSelectedItem().getKeyPair().getPublic()),
+                    fileWithExtension);
+        }
+
+
     }
 
 
@@ -264,6 +325,13 @@ public class MainController extends AbstractController {
         );
 
         deleteKeyMenuItem.disableProperty().bind(
+                keysListView.getSelectionModel().selectedItemProperty().isNull()
+        );
+
+        showDumpPublicKeyMItem.disableProperty().bind(
+                keysListView.getSelectionModel().selectedItemProperty().isNull()
+        );
+        saveDumpPublicKeyMItem.disableProperty().bind(
                 keysListView.getSelectionModel().selectedItemProperty().isNull()
         );
     }

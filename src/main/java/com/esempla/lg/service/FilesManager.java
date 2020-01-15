@@ -4,10 +4,7 @@ import javax0.license3j.io.IOFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,6 +125,31 @@ public class FilesManager {
             log.error("Exception Occurred while reading from file : {}", e.getMessage());
         }
         return data.toString();
+    }
+
+    public void writeToFile(String string, File file){
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        byte[] strToBytes = string.getBytes();
+        try {
+            if (outputStream != null) {
+                outputStream.write(strToBytes);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public IOFormat getExtension(File file) {
