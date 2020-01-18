@@ -6,6 +6,7 @@ import com.esempla.lg.util.FileSystemUtil;
 import com.esempla.lg.util.ViewsFactory;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -39,9 +40,9 @@ public class Launcher extends Application {
         controller.setStage(primaryStage);
 
         Scene scene = new Scene(borderPane);
-        scene.getStylesheets().add(getClass().getResource("/styles/styles.css").
-                toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
         primaryStage.setScene(scene);
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
         primaryStage.setResizable(false);
         primaryStage.show();
     }

@@ -179,5 +179,87 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.moditect</groupId>
+                        <artifactId>moditect-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-module-info</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>add-module-info</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/modules</outputDirectory>
+                                    <modules>
+                                        <module>
+                                            <artifact>
+                                                <groupId>com.javax0.license3j</groupId>
+                                                <artifactId>license3j</artifactId>
+                                            </artifact>
+                                            <moduleInfo>
+                                                <name>license3j</name>
+                                            </moduleInfo>
+                                        </module>
+                                    </modules>
+                                    <overwriteExistingFiles>true</overwriteExistingFiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-runtime-image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>create-runtime-image</goal>
+                                </goals>
+                                <configuration>
+                                    <modulePath>
+                                        <path>${project.build.directory}/modules</path>
+                                        <path>${PATH_TO_FX_MODS}</path>
+                                        <path>
+                                            ${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}
+                                        </path>
+                                        <path>
+                                            ${settings.localRepository}/org/slf4j/slf4j-api/1.8.0-beta1/slf4j-api-1.8.0-beta1.jar
+                                        </path>
+                                    </modulePath>
+                                    <modules>
+                                        <module>license.generator</module>
+                                    </modules>
+                                    <compression>2</compression>
+                                    <stripDebug>true</stripDebug>
+                                    <outputDirectory>${project.build.directory}/runtime-image</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <executions>
+                            <execution>
+                                <id>jpackage</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <property name="version" value="0.1" />
+                                        <ant antfile="${basedir}/build.xml">
+                                            <target name="current" />
+                                        </ant>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

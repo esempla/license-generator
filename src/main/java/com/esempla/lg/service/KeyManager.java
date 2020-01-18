@@ -54,8 +54,6 @@ public class KeyManager {
                 publicLicenseKeyPair.getPair().getPublic(),
                 privateLicenseKeyPair.getPair().getPrivate(), privateLicenseKeyPair.cipher())
         );
-        log.info("This are key bytes: "+ Arrays.toString(key.getKeyPair().getPublic().clone()));
-        log.info("Dump key: "+dump(key.getKeyPair().getPublic()));
         return key;
     }
 
@@ -63,7 +61,6 @@ public class KeyManager {
         File keyFolder =
                 new File(FileSystemUtil.keysDirectoryPath + File.separator + key.getName());
         filesManager.deleteFolderAndContent(keyFolder);
-        log.info("deletedKey");
     }
 
     public void writeKeyToFile(Key key, String path, IOFormat format) {
@@ -95,7 +92,6 @@ public class KeyManager {
                 if (keyPairReader != null) {
                     (new KeyPairReader(file)).readPrivate(format);
                     licenseKeyPair = keyPairReader.readPrivate(format);
-//
                 }
                 if (licenseKeyPair != null) {
 
