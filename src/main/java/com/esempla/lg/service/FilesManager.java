@@ -84,9 +84,8 @@ public class FilesManager {
             }
         }
         file.delete();
-       log.info("Deleted file/folder: "+file.getAbsolutePath());
+        log.info("Deleted file/folder: " + file.getAbsolutePath());
     }
-
 
 
     public void createFile(String name, String path) {
@@ -127,7 +126,7 @@ public class FilesManager {
         return data.toString();
     }
 
-    public void writeToFile(String string, File file){
+    public void writeToFile(String string, File file) {
         FileOutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(file);

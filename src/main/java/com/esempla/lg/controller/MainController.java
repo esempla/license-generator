@@ -186,30 +186,24 @@ public class MainController extends AbstractController {
         alert.setResizable(false);
         alert.setContentText("By deleting this key you won't be able to restore it any more");
         Optional<ButtonType> result = alert.showAndWait();
-        if(result.isEmpty()){
+        if (result.isEmpty()) {
             log.info("delete alert was closed");
-        }
-         else if(result.get() == ButtonType.OK){
+        } else if (result.get() == ButtonType.OK) {
             keyManager.deleteKeyFromRootFolder(selectedKey);
             keyStorage.deleteKey(selectedKey);
             log.info("delete key was approved");
-        }
-        else if(result.get() == ButtonType.CANCEL){
+        } else if (result.get() == ButtonType.CANCEL) {
             log.info("delete key was canceled");
         }
-
     }
 
     @FXML
     void handleAboutMenuButton(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("About");
-        alert.setHeaderText("Licence generator by ESEMPLA");
-        alert.setContentText("This app is used to generate licence for applications\n" +
-                "The root file ");
-
+        alert.setTitle("About LicenseGen");
+        alert.setHeaderText("Version: 0.1");
+        alert.setContentText("This app is used to generate licence for applications");
         alert.showAndWait();
-
     }
 
     @FXML
@@ -220,13 +214,13 @@ public class MainController extends AbstractController {
             log.info(file.getName());
         }
         License license = licenseService.readLicenceFromFile(file);
-        if (license == null){
+        if (license == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Licence Reader");
-            alert.setContentText("Can't create license from file "+file.getName());
+            alert.setContentText("Can't create license from file " + file.getName());
             alert.showAndWait();
-        }else {
+        } else {
             licenseEncTextArea.textProperty().setValue(Base64.getEncoder().encodeToString(license.serialized()));
         }
     }
@@ -264,12 +258,7 @@ public class MainController extends AbstractController {
                     keyManager.dump(keysListView.getSelectionModel().getSelectedItem().getKeyPair().getPublic()),
                     fileWithExtension);
         }
-
-
     }
-
-
-
 
     private void blinkTrue() {
         log.info("blinking");
