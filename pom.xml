@@ -42,10 +42,17 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/esempla/license-generator.git</connection>
-        <developerConnection>scm:git:ssh://github.com/esempla/license-generator.git</developerConnection>
+        <connection>scm:git:https://github.com/esempla/license-generator.git</connection>
+        <developerConnection>scm:git:https://github.com/esempla/license-generator.git</developerConnection>
         <url>https://github.com/esempla/license-generator</url>
     </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>github.com</id>
+            <url>https://github.com/esempla/license-generator.git</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
