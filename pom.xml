@@ -4,7 +4,7 @@
 
     <groupId>com.esempla</groupId>
     <artifactId>license-generator</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
 
     <properties>
         <java.version>13</java.version>
