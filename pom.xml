@@ -10,7 +10,7 @@
         <java.version>13</java.version>
         <lombok.version>1.18.8</lombok.version>
     </properties>
-    
+
     <name>LicenseGen</name>
     <url>https://github.com/esempla/license-generator</url>
     <description>Fast friendly license generator application</description>
