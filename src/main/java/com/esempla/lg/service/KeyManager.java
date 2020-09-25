@@ -13,11 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
 
@@ -47,7 +43,7 @@ public class KeyManager {
                 new File(path + File.separator + key.getName() + File.separator + FileSystemUtil.defaultPublicKeyName);
         LicenseKeyPair privateLicenseKeyPair = loadPrivateKey(privateKeyFile);
         LicenseKeyPair publicLicenseKeyPair = loadPublicKey(publicKeyFile);
-        if (privateLicenseKeyPair == null && publicLicenseKeyPair == null){
+        if (privateLicenseKeyPair == null && publicLicenseKeyPair == null) {
             return null;
         }
         key.setKeyPair(LicenseKeyPair.Create.from(
@@ -57,7 +53,7 @@ public class KeyManager {
         return key;
     }
 
-    public void deleteKeyFromRootFolder(Key key){
+    public void deleteKeyFromRootFolder(Key key) {
         File keyFolder =
                 new File(FileSystemUtil.keysDirectoryPath + File.separator + key.getName());
         filesManager.deleteFolderAndContent(keyFolder);
@@ -75,7 +71,7 @@ public class KeyManager {
             KeyPairWriter keyPairWriter = new KeyPairWriter(privateKeyFile, publicKeyFile);
             keyPairWriter.write(key.getKeyPair(), format);
         } catch (IOException e) {
-           log.error("Error on write key to file {}.", e.getMessage());
+            log.error("Error on write key to file {}.", e.getMessage());
         }
     }
 
@@ -127,12 +123,13 @@ public class KeyManager {
         }
         return null;
     }
-    public String dump(byte[] key){
+
+    public String dump(byte[] key) {
 
         Formatter formatter = new Formatter();
         for (byte b : key) {
-            formatter.format( "(byte) 0x%02X, ", b);
+            formatter.format("(byte) 0x%02X, ", b);
         }
-       return formatter.toString();
+        return formatter.toString();
     }
 }

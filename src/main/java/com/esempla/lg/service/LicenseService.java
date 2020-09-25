@@ -90,7 +90,7 @@ public class LicenseService {
         } catch (IOException e) {
             log.error("Error on read licence from file : {}.", e.getMessage());
             return null;
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             log.error("Can't create licence from file : {}.", e.getMessage());
             return null;
         }
